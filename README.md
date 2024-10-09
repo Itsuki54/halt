@@ -1,4 +1,3 @@
-
 # setup
 
 ```bash
@@ -14,4 +13,3 @@ prisma migrate dev
 ```bash
 npm run dev
 ```
-
