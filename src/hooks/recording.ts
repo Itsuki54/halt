@@ -46,15 +46,15 @@ export const useHooks = (): Hooks => {
   useEffect(() => {
     const uploadAudio = async () => {
       if (!audioFile) return;
-      const endPoint = "https://api.openai.com/v1/audio/transcriptions";
+      const endPoint = 'https://api.openai.com/v1/audio/transcriptions';
 
       const formData = new FormData();
-      formData.append("file", audioFile, "audio.mp3");
-      formData.append("model", "whisper-1");
-      formData.append("language", "ja");
+      formData.append('file', audioFile, 'audio.mp3');
+      formData.append('model', 'whisper-1');
+      formData.append('language', 'ja');
       setIsLoading(true);
       const response = await fetch(endPoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
@@ -79,4 +79,3 @@ export const useHooks = (): Hooks => {
     isLoading,
   };
 };
-

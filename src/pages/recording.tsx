@@ -1,11 +1,14 @@
 // pages/index.tsx
 import { playAudio } from '@/lib/playaudio';
-import { useState, useRef } from 'react';
+import {
+  useRef,
+  useState,
+} from 'react';
 
 type chat = {
   user: string;
   bot: string | null;
-}
+};
 
 const Home = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -24,7 +27,7 @@ const Home = () => {
     mediaRecorder.start();
     audioChunksRef.current = [];
 
-    mediaRecorder.ondataavailable = (event) => {
+    mediaRecorder.ondataavailable = event => {
       audioChunksRef.current.push(event.data);
     };
   };
@@ -42,7 +45,7 @@ const Home = () => {
     }
   };
 
-	const transcribeAudio = async (audioBlob: Blob) => {
+  const transcribeAudio = async (audioBlob: Blob) => {
     setLoading(true);
 
     const formData = new FormData();
@@ -56,51 +59,54 @@ const Home = () => {
       const data = await response.json();
       console.log(data);
 
-			try {
-				const botResponse = await fetch('/api/chatgpt', {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					method: 'POST',
-					body: JSON.stringify({ message: data.transcription }),
-				});
-				const botData = await botResponse.json();
-				try {
-					playAudio(botData.chatgptResponse, '3')
-				} catch (e) {
-					console.error(e)
-				}
-				setTranscription([...transcription, { user: data.transcription, bot: botData.chatgptResponse }]);
-			}
-			catch (error) {
-				console.error('Error transcribing audio:', error);
-				alert('Failed to transcribe audio');
-			}
-    } catch (error) {
+      try {
+        const botResponse = await fetch('/api/chatgpt', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify({ message: data.transcription }),
+        });
+        const botData = await botResponse.json();
+        try {
+          playAudio(botData.chatgptResponse, '3');
+        }
+        catch (e) {
+          console.error(e);
+        }
+        setTranscription([...transcription, { user: data.transcription, bot: botData.chatgptResponse }]);
+      }
+      catch (error) {
+        console.error('Error transcribing audio:', error);
+        alert('Failed to transcribe audio');
+      }
+    }
+    catch (error) {
       console.error('Error transcribing audio:', error);
       alert('Failed to transcribe audio');
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4">Whisper Audio Transcription</h1>
+    <div className='min-h-screen flex items-center justify-center bg-gray-100'>
+      <div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-md'>
+        <h1 className='text-2xl font-bold mb-4'>Whisper Audio Transcription</h1>
 
-        <div className="mb-4">
+        <div className='mb-4'>
           {!isRecording ? (
             <button
               onClick={startRecording}
-              className="w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+              className='w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600'
             >
               Start Recording
             </button>
           ) : (
             <button
               onClick={stopRecording}
-              className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+              className='w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
             >
               Stop Recording
             </button>
@@ -110,22 +116,20 @@ const Home = () => {
         {loading && <p>Transcribing...</p>}
 
         {transcription && (
-          <div className="mt-6 p-4 bg-gray-100 rounded">
-            <h2 className="text-xl font-semibold mb-2">Transcription:</h2>
-						{
-							transcription.map((t, index) => (
-								<div key={index} className="mb-4">
-									<div className="bg-blue-100 p-2 rounded-lg shadow-md">
-										<p className="text-blue-800 font-semibold">User:</p>
-										<p className="text-blue-600">{t.user}</p>
-									</div>
-									<div className="bg-green-100 p-2 rounded-lg shadow-md mt-2">
-										<p className="text-green-800 font-semibold">Bot:</p>
-										<p className="text-green-600">{t.bot}</p>
-									</div>
-								</div>
-							))
-						}
+          <div className='mt-6 p-4 bg-gray-100 rounded'>
+            <h2 className='text-xl font-semibold mb-2'>Transcription:</h2>
+            {transcription.map((t, index) => (
+              <div key={index} className='mb-4'>
+                <div className='bg-blue-100 p-2 rounded-lg shadow-md'>
+                  <p className='text-blue-800 font-semibold'>User:</p>
+                  <p className='text-blue-600'>{t.user}</p>
+                </div>
+                <div className='bg-green-100 p-2 rounded-lg shadow-md mt-2'>
+                  <p className='text-green-800 font-semibold'>Bot:</p>
+                  <p className='text-green-600'>{t.bot}</p>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
