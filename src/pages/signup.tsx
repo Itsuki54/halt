@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Layout from './layout';
+import { signIn } from 'next-auth/react';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,11 @@ export default function SignUp() {
       }
       else {
         toast.success('ユーザーを作成しました！');
-        router.push('/signin?redirected=true');
+        signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
       }
     }
     catch (error) {

@@ -6,7 +6,7 @@ import {
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id: uid, gender } = req.body;
+    const { id: uid, gender, purpose, character, imageUrl, userId } = req.body;
     if (!uid) {
       return res
         .status(400)
@@ -18,6 +18,10 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
       },
       data: {
         gender,
+        purpose,
+        character,
+        imageUrl,
+        userId,
       },
     });
     return res.status(200).json({ status: 'success', data: bot });
