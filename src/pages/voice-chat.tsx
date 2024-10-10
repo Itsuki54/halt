@@ -6,13 +6,19 @@ import { getServerSession } from 'next-auth';
 import { useState, useRef } from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
 import Layout from './layout';
+import bot from './bot';
+import { Bot } from '@prisma/client';
 
 type chat = {
   user: string;
-  bot: string | null;
+  bot: string;
 }
 
-const Home = () => {
+interface Props {
+  bot: Bot;
+}
+
+const Home = ({ bot }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState<chat[]>([]);
   const [loading, setLoading] = useState(false);
@@ -94,7 +100,7 @@ const Home = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4">Whisper Audio Transcription</h1>
-
+        <img src={bot.imageUrl ?? ''} alt='Bot' className='w-20 h-20 rounded-full' />
         <div className="mb-4">
           {!isRecording ? (
             <button

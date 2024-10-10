@@ -42,6 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       const response = await openai.audio.transcriptions.create({
+        language: 'ja',
         model: 'whisper-1',
         file: fs.createReadStream(filePath),
       });

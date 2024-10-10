@@ -50,7 +50,7 @@ export default function Home({ user, bot }: Props) {
         <h1 className='text-4xl font-fantasy text-white text-center mb-6 drop-shadow-lg'>Welcome to the Realm</h1>
       <div className='flex justify-center mb-6'>
         <div className='p-4 bg-white rounded-full shadow-lg'>
-          {bot.gender === 'male' ? <IoMan className='text-6xl text-blue-500' /> : <IoWoman className='text-6xl text-pink-500' />}
+          <img src={bot.imageUrl ?? ''} alt='Bot' className='w-20 h-20 rounded-full' />
         </div>
       </div>
       <div className='flex flex-col items-center bg-white bg-opacity-10 backdrop-blur-md p-4 rounded-lg shadow-inner max-h-80 overflow-y-auto'>

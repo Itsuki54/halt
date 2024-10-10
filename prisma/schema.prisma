@@ -28,5 +28,6 @@ model Bot {
   purpose String
   character String
   userId String @unique
+  imageUrl String?
   user   User   @relation(fields: [userId], references: [id])
 }
