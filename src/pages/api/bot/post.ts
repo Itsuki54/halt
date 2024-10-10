@@ -8,7 +8,7 @@ import {
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
-      const { gender, userId, purpose, character } = req.body;
+    const { gender, userId, purpose, character } = req.body;
     if (!gender || !userId || !purpose || !character) {
       return res
         .status(400)

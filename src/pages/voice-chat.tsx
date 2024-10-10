@@ -1,18 +1,21 @@
 // pages/index.tsx
 import { playAudio } from '@/lib/playaudio';
 import { db } from '@/lib/prisma';
+import { Bot } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
-import { useState, useRef } from 'react';
+import {
+  useRef,
+  useState,
+} from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
-import Layout from './layout';
 import bot from './bot';
-import { Bot } from '@prisma/client';
+import Layout from './layout';
 
 type chat = {
   user: string;
   bot: string;
-}
+};
 
 interface Props {
   bot: Bot;
@@ -100,48 +103,48 @@ const Home = ({ bot }: Props) => {
 
   return (
     <Layout>
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4">Whisper Audio Transcription</h1>
-        <img src={bot.imageUrl ?? ''} alt='Bot' className='w-20 h-20 rounded-full' />
-        <div className="mb-4">
-          {!isRecording ? (
-            <button
-              onClick={startRecording}
-              className='w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600'
-            >
-              Start Recording
-            </button>
-          ) : (
-            <button
-              onClick={stopRecording}
-              className='w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
-            >
-              Stop Recording
-            </button>
+      <div className='min-h-screen flex items-center justify-center bg-gray-100'>
+        <div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-md'>
+          <h1 className='text-2xl font-bold mb-4'>Whisper Audio Transcription</h1>
+          <img src={bot.imageUrl ?? ''} alt='Bot' className='w-20 h-20 rounded-full' />
+          <div className='mb-4'>
+            {!isRecording ? (
+              <button
+                onClick={startRecording}
+                className='w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600'
+              >
+                Start Recording
+              </button>
+            ) : (
+              <button
+                onClick={stopRecording}
+                className='w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
+              >
+                Stop Recording
+              </button>
+            )}
+          </div>
+
+          {loading && <p>Transcribing...</p>}
+
+          {transcription && (
+            <div className='mt-6 p-4 bg-gray-100 rounded'>
+              <h2 className='text-xl font-semibold mb-2'>Transcription:</h2>
+              {transcription.map((t, index) => (
+                <div key={index} className='mb-4'>
+                  <div className='bg-blue-100 p-2 rounded-lg shadow-md'>
+                    <p className='text-blue-800 font-semibold'>User:</p>
+                    <p className='text-blue-600'>{t.user}</p>
+                  </div>
+                  <div className='bg-green-100 p-2 rounded-lg shadow-md mt-2'>
+                    <p className='text-green-800 font-semibold'>Bot:</p>
+                    <p className='text-green-600'>{t.bot}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-
-        {loading && <p>Transcribing...</p>}
-
-        {transcription && (
-          <div className='mt-6 p-4 bg-gray-100 rounded'>
-            <h2 className='text-xl font-semibold mb-2'>Transcription:</h2>
-            {transcription.map((t, index) => (
-              <div key={index} className='mb-4'>
-                <div className='bg-blue-100 p-2 rounded-lg shadow-md'>
-                  <p className='text-blue-800 font-semibold'>User:</p>
-                  <p className='text-blue-600'>{t.user}</p>
-                </div>
-                <div className='bg-green-100 p-2 rounded-lg shadow-md mt-2'>
-                  <p className='text-green-800 font-semibold'>Bot:</p>
-                  <p className='text-green-600'>{t.bot}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
       </div>
     </Layout>
   );
