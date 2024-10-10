@@ -15,7 +15,7 @@ interface Props {
 
 export default function Home({ user, bot }: Props) {
   return (
-    <Layout >
+    <Layout>
       <div>
         <h1>Home</h1>
       </div>
