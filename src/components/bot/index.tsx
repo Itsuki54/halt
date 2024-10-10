@@ -1,1 +1,1 @@
-export {default as NewBotPage} from './NewBotPage';
+export { default as NewBotPage } from './NewBotPage';

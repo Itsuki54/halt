@@ -1,7 +1,3 @@
-
-
 export default function SingupPage() {
-  return (
-    <div></div>
-  );
+  return <div></div>;
 }
