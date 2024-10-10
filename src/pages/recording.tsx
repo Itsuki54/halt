@@ -1,9 +1,15 @@
 // pages/index.tsx
+import { playAudio } from '@/lib/playaudio';
 import { useState, useRef } from 'react';
+
+type chat = {
+  user: string;
+  bot: string | null;
+}
 
 const Home = () => {
   const [isRecording, setIsRecording] = useState(false);
-  const [transcription, setTranscription] = useState<string[] >([]);
+  const [transcription, setTranscription] = useState<chat[]>([]);
   const [loading, setLoading] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -50,7 +56,26 @@ const Home = () => {
       const data = await response.json();
       console.log(data);
 
-      setTranscription([...transcription, data.transcription]);
+			try {
+				const botResponse = await fetch('/api/chatgpt', {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					method: 'POST',
+					body: JSON.stringify({ message: data.transcription }),
+				});
+				const botData = await botResponse.json();
+				try {
+					playAudio(botData.chatgptResponse, '3')
+				} catch (e) {
+					console.error(e)
+				}
+				setTranscription([...transcription, { user: data.transcription, bot: botData.chatgptResponse }]);
+			}
+			catch (error) {
+				console.error('Error transcribing audio:', error);
+				alert('Failed to transcribe audio');
+			}
     } catch (error) {
       console.error('Error transcribing audio:', error);
       alert('Failed to transcribe audio');
@@ -87,9 +112,20 @@ const Home = () => {
         {transcription && (
           <div className="mt-6 p-4 bg-gray-100 rounded">
             <h2 className="text-xl font-semibold mb-2">Transcription:</h2>
-            {transcription.map((t, index) => (
-              <p key={index}>{t}</p>
-            ))}
+						{
+							transcription.map((t, index) => (
+								<div key={index} className="mb-4">
+									<div className="bg-blue-100 p-2 rounded-lg shadow-md">
+										<p className="text-blue-800 font-semibold">User:</p>
+										<p className="text-blue-600">{t.user}</p>
+									</div>
+									<div className="bg-green-100 p-2 rounded-lg shadow-md mt-2">
+										<p className="text-green-800 font-semibold">Bot:</p>
+										<p className="text-green-600">{t.bot}</p>
+									</div>
+								</div>
+							))
+						}
           </div>
         )}
       </div>
