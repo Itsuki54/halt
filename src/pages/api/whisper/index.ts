@@ -1,7 +1,13 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { OpenAI } from 'openai';
-import { Formidable, File } from 'formidable';
+import {
+  File,
+  Formidable,
+} from 'formidable';
 import fs from 'fs';
+import type {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next';
+import { OpenAI } from 'openai';
 import path from 'path';
 
 export const config = {
@@ -48,7 +54,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       return res.status(200).json({ transcription: response.text });
-    } catch (error) {
+    }
+    catch (error) {
       return res.status(500).json({ message: 'Failed to transcribe audio', error });
     }
   });
