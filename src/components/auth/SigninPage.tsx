@@ -7,17 +7,16 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import Layout from "../layout";
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
+import { signIn } from 'next-auth/react';
 
 import { Card, AuthContainer } from './common';
 
 
-export default function SignupPage() {
+export default function SigninPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -58,19 +57,20 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const response = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
-      const data = await response.json();
-      if (data.error) {
-        setError(data.error);
-      } else {
-        toast.success('ユーザーを作成しました！');
-        router.push('/signin?redirected=true');
+      if (!response || response.error) {
+        setError(response?.error || 'An error occurred');
       }
-    } catch (error) {
+      else {
+        toast.success('ログインしました！');
+        router.push('/');
+      }
+    }
+    catch (error) {
       if (error instanceof Error) setError(error.message);
       else setError('An error occurred');
     }
@@ -85,7 +85,7 @@ export default function SignupPage() {
             variant="h4"
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
-            Sign up
+            Sign in
           </Typography>
           {error && <Typography color="error">{error}</Typography>}
           <Box
@@ -118,7 +118,7 @@ export default function SignupPage() {
                 placeholder="••••••"
                 type="password"
                 id="password"
-                autoComplete="new-password"
+                autoComplete="current-password"
                 variant="outlined"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -138,13 +138,13 @@ export default function SignupPage() {
                 },
               }}
             >
-              Sign up
+              Sign in
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
+              Don't have an account?{' '}
               <span>
-                <Link href="/signin" variant="body2" sx={{ alignSelf: 'center' }}>
-                  Sign in
+                <Link href="/signup" variant="body2" sx={{ alignSelf: 'center' }}>
+                  Sign up
                 </Link>
               </span>
             </Typography>
