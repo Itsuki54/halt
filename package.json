@@ -3,11 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-<<<<<<< HEAD
-    "init": "docker compose up -d && prisma migrate reset && prisma db seed && prisma generate",
-=======
     "init": "docker compose up -d && prisma migrate dev  && prisma generate",
->>>>>>> develop
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
