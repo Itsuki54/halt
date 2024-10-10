@@ -25,6 +25,9 @@ model User {
 model Bot {
   id     String @id @default(uuid())
   gender String
+  purpose String
+  character String
   userId String @unique
+  imageUrl String?  @db.VarChar(1024)
   user   User   @relation(fields: [userId], references: [id])
 }

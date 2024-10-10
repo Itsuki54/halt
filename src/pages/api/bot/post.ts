@@ -7,13 +7,9 @@ import {
 } from 'next';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
-  console.log(
-    'req.body',
-    req.body,
-  );
   try {
-    const { gender, userId } = req.body;
-    if (!gender || !userId) {
+    const { gender, userId, purpose, character } = req.body;
+    if (!gender || !userId || !purpose || !character) {
       return res
         .status(400)
         .json({ status: 'error', error: 'User Data not provided' });
@@ -22,6 +18,8 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
       data: {
         gender,
         userId,
+        purpose,
+        character,
       },
     });
 

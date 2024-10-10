@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import Layout from '../layout';
+import Layout from '../../components/layout';
 
 export default function NewBot() {
   const [gender, setGender] = useState<string>('');
