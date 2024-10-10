@@ -4,56 +4,81 @@ import { db } from '@/lib/prisma';
 import { User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { authOptions } from '../api/auth/[...nextauth]';
 import Layout from '../layout';
+
 type FormData = {
   gender: string;
   purpose: string;
   character: string;
 };
 
-export default function NewBot(
-  { user }: { user: User; },
-) {
+export default function NewBot({ user }: { user: User }) {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const userId = user.id;
   const router = useRouter();
+
   const onSubmit = async (data: FormData) => {
     try {
-      const imageUrl = await fetch('/api/dalle3', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          gender: data.gender,
-          purpose: data.purpose,
-          character: data.character,
-        }),
-      }).then(res => res.json());
 
-      // Create the bot with the generated image URL
-      const response = await fetch('/api/bot', {
+      const botResponse = await fetch('/api/bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
-          userId,
-          imageUrl: imageUrl.imagePath,
+          userId: userId,
         }),
       });
 
-      const result = await response.json();
-      if (result.status === 'success') {
-        toast.success('Bot created successfully');
-        router.push('/');
-      }
-      else {
+      const botResult = await botResponse.json();
+      console.log('Bot creation result:', botResult);
+
+      if (botResult.status === 'success' && botResult.data.id) {
+        const imageUrlResponse = await fetch('/api/dalle3', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gender: data.gender,
+            purpose: data.purpose,
+            character: data.character,
+          }),
+        });
+
+        const imageUrl = await imageUrlResponse.json();
+        console.log('Image generation result:', imageUrl);
+
+        if (imageUrl && imageUrl.imagePath) {
+          const updateResponse = await fetch(`/api/bot`, {
+  method: 'PATCH',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    id: botResult.data.id,
+    gender: data.gender,
+    purpose: data.purpose,
+    character: data.character,
+    imageUrl: imageUrl.imagePath,
+    userId: userId
+            }),
+          });
+
+          const updateResult = await updateResponse.json();
+
+          if (updateResult.status === 'success') {
+            toast.success('Bot created and updated with image successfully');
+            router.push('/');
+          } else {
+            toast.error('Failed to update bot with image');
+          }
+        } else {
+          toast.error('Image generation failed');
+        }
+      } else {
         toast.error('Failed to create bot');
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error in onSubmit:', error);
       toast.error('An error occurred');
     }
