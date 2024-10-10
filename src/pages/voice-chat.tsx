@@ -1,6 +1,11 @@
 // pages/index.tsx
 import { playAudio } from '@/lib/playaudio';
+import { db } from '@/lib/prisma';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import { useState, useRef } from 'react';
+import { authOptions } from './api/auth/[...nextauth]';
+import Layout from './layout';
 
 type chat = {
   user: string;
@@ -85,6 +90,7 @@ const Home = () => {
   };
 
   return (
+    <Layout>
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4">Whisper Audio Transcription</h1>
@@ -129,8 +135,57 @@ const Home = () => {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </Layout>
   );
 };
 
 export default Home;
+export const getServerSideProps: GetServerSideProps = async ctx => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  if (!session || !session.user) {
+    return {
+      redirect: {
+        destination: '/signup',
+        permanent: false,
+      },
+    };
+  }
+
+  const userData = await db.user.findUnique({
+    where: {
+      id: session.user.uid,
+    },
+  });
+
+  if (!userData) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+  const user = JSON.parse(JSON.stringify(userData));
+
+  const botData = await db.bot.findUnique({
+    where: {
+      userId: user.id,
+    },
+  });
+  const bot = JSON.parse(JSON.stringify(botData));
+  if (!bot) {
+    return {
+      redirect: {
+        destination: `/bot/new`,
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      user,
+      bot,
+    },
+  };
+};
