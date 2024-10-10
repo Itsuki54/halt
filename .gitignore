@@ -38,3 +38,7 @@ next-env.d.ts
 .env
 # whisper
 /tmp
+
+# prisma
+prisma/migrations
+prisma/migrations.lock
