@@ -1,20 +1,22 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import { useState } from 'react';
-import Layout from "../layout";
-import { useRouter } from 'next/router';
-import { toast } from 'react-hot-toast';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import Layout from '../layout';
 
-import { Card, AuthContainer } from './common';
-
+import {
+  AuthContainer,
+  Card,
+} from './common';
 
 export default function SigninPage() {
   const [email, setEmail] = useState('');
@@ -33,7 +35,8 @@ export default function SigninPage() {
       setEmailError(true);
       setEmailErrorMessage('Please enter a valid email address.');
       isValid = false;
-    } else {
+    }
+    else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
@@ -42,7 +45,8 @@ export default function SigninPage() {
       setPasswordError(true);
       setPasswordErrorMessage('Password must be at least 6 characters long.');
       isValid = false;
-    } else {
+    }
+    else {
       setPasswordError(false);
       setPasswordErrorMessage('');
     }
@@ -78,61 +82,61 @@ export default function SigninPage() {
 
   return (
     <Layout>
-      <AuthContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
+      <AuthContainer direction='column' justifyContent='space-between'>
+        <Card variant='outlined'>
           <Typography
-            component="h1"
-            variant="h4"
+            component='h1'
+            variant='h4'
             sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
           >
             Sign in
           </Typography>
-          {error && <Typography color="error">{error}</Typography>}
+          {error && <Typography color='error'>{error}</Typography>}
           <Box
-            component="form"
+            component='form'
             onSubmit={handleSubmit}
             sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor='email'>Email</FormLabel>
               <TextField
                 required
                 fullWidth
-                id="email"
-                placeholder="your@email.com"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
+                id='email'
+                placeholder='your@email.com'
+                name='email'
+                autoComplete='email'
+                variant='outlined'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 error={emailError}
                 helperText={emailErrorMessage}
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor='password'>Password</FormLabel>
               <TextField
                 required
                 fullWidth
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                variant="outlined"
+                name='password'
+                placeholder='••••••'
+                type='password'
+                id='password'
+                autoComplete='current-password'
+                variant='outlined'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={e => setPassword(e.target.value)}
                 error={passwordError}
                 helperText={passwordErrorMessage}
               />
             </FormControl>
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{
-                backgroundColor: 'black',
-                color: 'white',
+                'backgroundColor': 'black',
+                'color': 'white',
                 '&:hover': {
                   backgroundColor: 'gray',
                 },
@@ -143,7 +147,7 @@ export default function SigninPage() {
             <Typography sx={{ textAlign: 'center' }}>
               Don't have an account?{' '}
               <span>
-                <Link href="/signup" variant="body2" sx={{ alignSelf: 'center' }}>
+                <Link href='/signup' variant='body2' sx={{ alignSelf: 'center' }}>
                   Sign up
                 </Link>
               </span>
