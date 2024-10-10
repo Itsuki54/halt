@@ -1,7 +1,18 @@
-export default function Layout({ children }: { children: React.ReactNode; }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
-      {children}
+    <div className="relative flex items-center justify-center min-h-screen">
+      <div
+        className="absolute inset-0 bg-black opacity-70 z-0"
+        style={{
+          backgroundImage: "url('/background.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      ></div>
+
+      <div className="relative z-10">
+        {children}
+      </div>
     </div>
   );
 }
