@@ -23,33 +23,33 @@ export default function NewBot(
   const router = useRouter();
   const onSubmit = async (data: FormData) => {
     try {
+      const imageUrl = await fetch('/api/dalle3', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gender: data.gender,
+          purpose: data.purpose,
+          character: data.character,
+        }),
+      }).then(res => res.json());
 
-        const imageUrl = await fetch('/api/dalle3', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            gender: data.gender,
-            purpose: data.purpose,
-            character: data.character,
-          }),
-        }).then(res => res.json());
+      // Create the bot with the generated image URL
+      const response = await fetch('/api/bot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...data,
+          userId,
+          imageUrl: imageUrl.imagePath,
+        }),
+      });
 
-        // Create the bot with the generated image URL
-        const response = await fetch('/api/bot', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...data,
-            userId,
-            imageUrl: imageUrl.imagePath
-          }),
-        });
-
-        const result = await response.json();
-        if (result.status === 'success') {
-          toast.success('Bot created successfully');
-          router.push('/');
-      } else {
+      const result = await response.json();
+      if (result.status === 'success') {
+        toast.success('Bot created successfully');
+        router.push('/');
+      }
+      else {
         toast.error('Failed to create bot');
       }
     }
