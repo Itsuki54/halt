@@ -23,22 +23,16 @@ export default function NewBot(
   const router = useRouter();
   const onSubmit = async (data: FormData) => {
     try {
-      // Generate the bot image
-      const botImageResponse = await fetch('/api/dalle3', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          gender: data.gender,
-          purpose: data.purpose,
-          character: data.character,
-        }),
-      });
 
-      const botImageUrl = await botImageResponse.json();
-
-      // Check if the image generation was successful
-      if (botImageUrl.status === 'success') {
-        const imageUrl = botImageUrl.imagePath;
+        const imageUrl = await fetch('/api/dalle3', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gender: data.gender,
+            purpose: data.purpose,
+            character: data.character,
+          }),
+        }).then(res => res.json());
 
         // Create the bot with the generated image URL
         const response = await fetch('/api/bot', {
@@ -47,7 +41,7 @@ export default function NewBot(
           body: JSON.stringify({
             ...data,
             userId,
-            imageUrl,
+            imageUrl: imageUrl.imagePath
           }),
         });
 
@@ -55,11 +49,8 @@ export default function NewBot(
         if (result.status === 'success') {
           toast.success('Bot created successfully');
           router.push('/');
-        } else {
-          toast.error('Failed to create bot');
-        }
       } else {
-        toast.error('Failed to generate image');
+        toast.error('Failed to create bot');
       }
     } catch (error) {
       console.error("Error in onSubmit:", error);
