@@ -1,10 +1,12 @@
 import { db } from '@/lib/prisma';
-import { NextApiRequest, NextApiResponse } from 'next';
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next';
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   console.log(req.body);
   try {
-
     const { id: botId, gender, purpose, character, imageUrl, userId } = req.body;
 
     if (!botId) {
@@ -29,10 +31,12 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
     });
 
     return res.status(200).json({ status: 'success', data: bot });
-  } catch (e) {
+  }
+  catch (e) {
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
-    } else {
+    }
+    else {
       return res.status(500).json({ status: 'error', error: 'Unknown error occurred' });
     }
   }

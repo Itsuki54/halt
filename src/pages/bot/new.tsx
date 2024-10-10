@@ -16,14 +16,13 @@ type FormData = {
   character: string;
 };
 
-export default function NewBot({ user }: { user: User }) {
+export default function NewBot({ user }: { user: User; }) {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const userId = user.id;
   const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
     try {
-
       const botResponse = await fetch('/api/bot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -52,15 +51,15 @@ export default function NewBot({ user }: { user: User }) {
 
         if (imageUrl && imageUrl.imagePath) {
           const updateResponse = await fetch(`/api/bot`, {
-  method: 'PATCH',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    id: botResult.data.id,
-    gender: data.gender,
-    purpose: data.purpose,
-    character: data.character,
-    imageUrl: imageUrl.imagePath,
-    userId: userId
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: botResult.data.id,
+              gender: data.gender,
+              purpose: data.purpose,
+              character: data.character,
+              imageUrl: imageUrl.imagePath,
+              userId: userId,
             }),
           });
 
@@ -69,16 +68,20 @@ export default function NewBot({ user }: { user: User }) {
           if (updateResult.status === 'success') {
             toast.success('Bot created and updated with image successfully');
             router.push('/');
-          } else {
+          }
+          else {
             toast.error('Failed to update bot with image');
           }
-        } else {
+        }
+        else {
           toast.error('Image generation failed');
         }
-      } else {
+      }
+      else {
         toast.error('Failed to create bot');
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error in onSubmit:', error);
       toast.error('An error occurred');
     }
