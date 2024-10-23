@@ -1,5 +1,5 @@
 import { db } from '@/lib/prisma';
-import argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import {
   NextApiRequest,
@@ -23,7 +23,7 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
     }
     const pepper = process.env.PEPPER;
     const salt = genSalt();
-    const hash = await argon2.hash(pepper + password + salt);
+    const hash = await bcrypt.hash(password + pepper, salt);
     const user = await db.user.create({
       data: {
         name: 'New User',
