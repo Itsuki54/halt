@@ -9,7 +9,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   return (
-    <div className="h-screen bg-cover bg-center" style={{ backgroundImage: "url('/inside.webp')" }}>
+    <div className='h-screen bg-cover bg-center' style={{ backgroundImage: 'url(\'/inside.webp\')' }}>
       <div className='flex h-screen px-8 py-4'>
         <div className='basis-1/4'>
           <Sidebar />
