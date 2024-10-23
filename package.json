@@ -5,7 +5,7 @@
   "scripts": {
     "init": "docker compose up -d && prisma migrate dev  && prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "dprint fmt"

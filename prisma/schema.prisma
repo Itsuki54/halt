@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
 }
 
 model User {
@@ -20,14 +20,25 @@ model User {
   bot   Bot?
   salt  String
   password String
+  logs  Log[]
 }
 
 model Bot {
   id     String @id @default(uuid())
-  gender String
-  purpose String
-  character String
+  type String
   userId String @unique
   imageUrl String?  @db.VarChar(1024)
   user   User   @relation(fields: [userId], references: [id])
+  logs   Log[]
+}
+
+model Log{
+  id String @id @default(uuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  botId String
+  bot Bot @relation(fields: [botId], references: [id])
+  message String
+  response String
+  createdAt DateTime @default(now())
 }

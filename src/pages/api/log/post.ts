@@ -5,19 +5,27 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
+import bot from '../bot';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
+  console.log(
+    'req.body',
+    req.body,
+  );
   try {
-    const { type, userId } = req.body;
-    if (!type || !userId) {
+    const { userId, botId, message, response } = req.body;
+
+    if (!userId || !botId || !message || !response) {
       return res
         .status(400)
         .json({ status: 'error', error: 'User Data not provided' });
     }
-    const bot = await db.bot.create({
+    const bot = await db.log.create({
       data: {
-        type,
         userId,
+        botId,
+        message,
+        response,
       },
     });
 
@@ -28,7 +36,7 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
     else {
-      return res.status(500).json({ status: 'error', error: e });
+      return res.status(500).json({ status: 'error', error: 'Unknown error occurred' });
     }
   }
 }

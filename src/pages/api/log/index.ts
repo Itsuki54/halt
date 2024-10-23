@@ -2,9 +2,7 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import get from './get';
 import post from './post';
-import remove from './remove';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,10 +12,6 @@ export default async function handler(
     switch (req.method) {
       case 'POST':
         return await post(req, res);
-      case 'GET':
-        return await get(req, res);
-      case 'DELETE':
-        return await remove(req, res);
       default:
         return res
           .status(405)

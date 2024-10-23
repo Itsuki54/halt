@@ -15,7 +15,7 @@ export default async function handler(
     res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-  const { message, gender } = req.body;
+  const { message, prompt } = req.body;
 
   if (!message) {
     return res.status(400).json({ error: 'Text is required' });
@@ -25,7 +25,7 @@ export default async function handler(
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        { role: 'system', content: gender === 'male' ? 'You are a man' : 'You are a woman' },
+        { role: 'system', content: prompt },
         { role: 'user', content: message },
       ],
     });
