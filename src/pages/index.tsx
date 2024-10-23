@@ -1,11 +1,18 @@
+import { getPrompt } from '@/data/prompt';
 import { db } from '@/lib/prisma';
-import { Bot, User } from '@prisma/client';
+import {
+  Bot,
+  User,
+} from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { authOptions } from './api/auth/[...nextauth]';
-import { IoWoman, IoMan } from "react-icons/io5";
 import { useState } from 'react';
+import {
+  IoMan,
+  IoWoman,
+} from 'react-icons/io5';
+import { authOptions } from './api/auth/[...nextauth]';
 
 interface Props {
   user: User;
@@ -23,16 +30,30 @@ export default function Home({ user, bot }: Props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: input, prompt: getPrompt(bot.type) }),
       });
 
       const data = await response.json();
       const chatgptResponse = data.chatgptResponse;
       setMessages([...messages, { sender: 'user', text: input }, {
-        sender: 'bot', text: chatgptResponse
+        sender: 'bot',
+        text: chatgptResponse,
       }]);
+      const logResponse = await fetch('/api/log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          botId: bot.id,
+          message: input,
+          response: chatgptResponse,
+        }),
+      });
       setInput('');
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error sending message:', error);
     }
   };
@@ -40,9 +61,6 @@ export default function Home({ user, bot }: Props) {
     <div className='flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black p-6'>
       <h1 className='text-4xl font-fantasy text-white text-center mb-6 drop-shadow-lg'>Welcome to the Realm</h1>
       <div className='flex justify-center mb-6'>
-        <div className='p-4 bg-white rounded-full shadow-lg'>
-          {bot.gender === 'male' ? <IoMan className='text-6xl text-blue-500' /> : <IoWoman className='text-6xl text-pink-500' />}
-        </div>
       </div>
       <div className='flex flex-col items-center bg-white bg-opacity-10 backdrop-blur-md p-4 rounded-lg shadow-inner max-h-80 overflow-y-auto'>
         {messages.map((msg, index) => (
@@ -53,7 +71,7 @@ export default function Home({ user, bot }: Props) {
         <input
           type='text'
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={e => setInput(e.target.value)}
           placeholder='Type your message...'
           className='w-full p-2 mt-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
         />
@@ -108,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   return {
     props: {
       user,
-      bot
+      bot,
     },
   };
 };

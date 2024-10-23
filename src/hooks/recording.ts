@@ -1,4 +1,7 @@
-import { useRef, useState } from "react";
+import {
+  useRef,
+  useState,
+} from 'react';
 
 type Hooks = {
   startRecording: () => void;
@@ -13,21 +16,21 @@ export const useHooks = (): Hooks => {
 
   const handleDataAvailable = (event: BlobEvent) => {
     // 音声ファイル生成
-    const file = new File([event.data], "audio.mp3", {
+    const file = new File([event.data], 'audio.mp3', {
       type: event.data.type,
       lastModified: Date.now(),
     });
     setAudioFile(file);
   };
 
-  const startRecording = async() => {
+  const startRecording = async () => {
     // 録音開始
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorder.current = new MediaRecorder(stream);
     mediaRecorder.current.start();
     mediaRecorder.current.addEventListener(
-      "dataavailable",
-      handleDataAvailable
+      'dataavailable',
+      handleDataAvailable,
     );
     setIsAudio(true);
   };
@@ -44,4 +47,3 @@ export const useHooks = (): Hooks => {
     isAudio,
   };
 };
-
