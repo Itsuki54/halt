@@ -19,22 +19,29 @@ const findUserByCredentials = async (
         if (
           await argon2.verify(
             user.password,
-            pepper + credentials?.password + user.salt,
+            pepper + credentials.password + user.salt,
           )
         ) {
           return user;
-        }
-        else {
+        } else {
+          console.warn('パスワード検証に失敗しました:', credentials.email);
           return null;
         }
+      } else {
+        console.warn('ユーザーが見つかりませんでした:', credentials.email);
       }
-    }
-    catch (e) {
+    } catch (e) {
+      console.error('ユーザー認証中にエラーが発生しました:', e);
       return null;
     }
   }
   return null;
 };
+
+// 環境変数の確認
+if (!process.env.NEXTAUTH_SECRET || !process.env.PEPPER) {
+  throw new Error('認証のための環境変数が不足しています。');
+}
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
@@ -46,10 +53,11 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
-        const user = (await findUserByCredentials(credentials)) as User;
+        const user = await findUserByCredentials(credentials);
         if (user) {
           return user;
         }
+        console.warn('認証に失敗しました:', credentials);
         return null;
       },
     }),
