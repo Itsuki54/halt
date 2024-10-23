@@ -7,10 +7,6 @@ import {
 } from 'next';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
-  console.log(
-    'req.body',
-    req.body,
-  );
   try {
     const { type, userId } = req.body;
     if (!type || !userId) {

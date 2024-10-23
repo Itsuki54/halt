@@ -30,7 +30,6 @@ const findUserByCredentials = async (
       }
     }
     catch (e) {
-      console.log(e);
       return null;
     }
   }
