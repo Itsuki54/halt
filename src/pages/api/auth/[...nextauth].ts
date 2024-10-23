@@ -1,6 +1,6 @@
 import { db } from '@/lib/prisma';
 import { User } from '@prisma/client';
-import argon2 from 'argon2';
+import bcrypt from 'bcrypt';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -16,12 +16,13 @@ const findUserByCredentials = async (
       });
       if (user) {
         const pepper = process.env.PEPPER;
-        if (
-          await argon2.verify(
-            user.password,
-            pepper + credentials.password + user.salt,
-          )
-        ) {
+        // bcryptを使ってパスワードを検証する
+        const isValidPassword = await bcrypt.compare(
+          pepper + credentials.password + user.salt,
+          user.password,
+        );
+
+        if (isValidPassword) {
           return user;
         } else {
           console.warn('パスワード検証に失敗しました:', credentials.email);
