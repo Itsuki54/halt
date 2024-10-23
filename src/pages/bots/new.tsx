@@ -110,6 +110,16 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     },
   });
 
+  const bot = JSON.parse(JSON.stringify(botData));
+  if (bot) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       user,
