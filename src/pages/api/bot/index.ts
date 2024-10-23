@@ -3,7 +3,6 @@ import {
   NextApiResponse,
 } from 'next';
 import get from './get';
-import patch from './patch';
 import post from './post';
 import remove from './remove';
 
@@ -17,8 +16,6 @@ export default async function handler(
         return await post(req, res);
       case 'GET':
         return await get(req, res);
-      case 'PATCH':
-        return await patch(req, res);
       case 'DELETE':
         return await remove(req, res);
       default:
