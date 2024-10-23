@@ -9,13 +9,15 @@ interface Props {
 
 const Layout = ({ children }: Props) => {
   return (
-    <div className='flex flex-col h-screen'>
-      <Header />
-      <div className='flex flex-1'>
-        <Sidebar />
-        <main className='flex-1 p-4'>
+    <div className="h-screen bg-cover bg-center" style={{ backgroundImage: "url('/inside.webp')" }}>
+      <div className='flex h-screen px-8 py-4'>
+        <div className='basis-1/4'>
+          <Sidebar />
+        </div>
+        <main className='basis-1/2'>
           {children}
         </main>
+        <div className='basis-1/4'></div>
       </div>
     </div>
   );

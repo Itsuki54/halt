@@ -21,6 +21,7 @@ interface Props {
 export default function Home({ user, bot }: Props) {
   const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
   const [input, setInput] = useState('');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleSendMessage = async () => {
     try {
@@ -46,32 +47,54 @@ export default function Home({ user, bot }: Props) {
   };
   return (
     <Layout>
-      <div className='flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-black p-6'>
-        <h1 className='text-4xl font-fantasy text-white text-center mb-6 drop-shadow-lg'>Welcome to the Realm</h1>
-        <div className='flex justify-center mb-6'>
-          <div className='p-4 bg-white rounded-full shadow-lg'>
-            <img src={bot.imageUrl ?? ''} alt='Bot' className='w-20 h-20 rounded-full' />
+      <div className="flex flex-col h-full" style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
+        {/* メッセージリスト */}
+        <div className="basis-11/12 overflow-y-auto p-4">
+          <div className="flex flex-col space-y-2">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                {msg.sender !== 'user' && (
+                  <img
+                    src={bot.imageUrl ?? ''}
+                    alt="Bot"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                )}
+                <div
+                  className={`p-2 rounded-lg max-w-xs ${msg.sender === 'user'
+                      ? 'bg-[rgb(0,109,113)] text-white'
+                      : 'bg-white text-[rgb(0,109,113)]'
+                    }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+
           </div>
         </div>
-        <div className='flex flex-col items-center bg-white bg-opacity-10 backdrop-blur-md p-4 rounded-lg shadow-inner max-h-80 overflow-y-auto'>
-          {messages.map((msg, index) => (
-            <div key={index} className={`w-full p-2 mb-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-200 text-blue-900' : 'bg-green-200 text-green-900'}`}>
-              {msg.text}
-            </div>
-          ))}
+
+        {/* Input Section */}
+        <div className="basis-1/12 flex items-center mb-2 mx-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
           <input
-            type='text'
+            type="text"
+            placeholder="何か悩んでる？相談に乗るよ！"
             value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder='Type your message...'
-            className='w-full p-2 mt-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            onChange={(e) => setInput(e.target.value)}
+            className="px-4 flex-1 h-full placeholder-gray-700 outline-none"
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
           />
-          <button onClick={handleSendMessage} className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition'>
-            Send
-          </button>
+          <div onClick={handleSendMessage} className="flex items-center justify-center p-2 m-4" style={{ width: "5%", backgroundColor: 'rgba(0, 195, 202, 1)' }}>
+            <img src="/send.png" alt="send" className="w-full" />
+          </div>
         </div>
       </div>
     </Layout>
+
+
   );
 }
 
