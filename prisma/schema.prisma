@@ -18,8 +18,6 @@ model User {
   name  String
   email String @unique
   bot   Bot?
-  salt  String
-  password String
   logs  Log[]
 }
 

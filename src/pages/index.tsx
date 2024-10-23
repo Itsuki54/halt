@@ -82,12 +82,13 @@ export default function Home({ user, bot }: Props) {
     </div>
   );
 }
+
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
   if (!session || !session.user) {
     return {
       redirect: {
-        destination: '/signup',
+        destination: '/signin',
         permanent: false,
       },
     };
@@ -114,6 +115,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       userId: session.user.uid,
     },
   });
+
   const bot = JSON.parse(JSON.stringify(botData));
   if (!bot) {
     return {

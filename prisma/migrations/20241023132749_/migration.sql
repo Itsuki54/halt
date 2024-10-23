@@ -3,8 +3,6 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "salt" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -14,7 +12,6 @@ CREATE TABLE "Bot" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "imageUrl" VARCHAR(1024),
 
     CONSTRAINT "Bot_pkey" PRIMARY KEY ("id")
 );

@@ -28,8 +28,6 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
       data: {
         name: 'New User',
         email,
-        password: hash,
-        salt,
       },
     });
     return res.status(200).json({ status: 'success', data: user });
