@@ -18,10 +18,10 @@ export default function SignIn() {
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
-  if (!session || !session.user) {
+  if (session && session.user) {
     return {
       redirect: {
-        destination: '/signin',
+        destination: '/',
         permanent: false,
       },
     };
@@ -33,10 +33,10 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     },
   });
 
-  if (!userData) {
+  if (userData) {
     return {
       redirect: {
-        destination: '/signin',
+        destination: '/',
         permanent: false,
       },
     };
