@@ -6,18 +6,18 @@ import { signIn } from 'next-auth/react';
 import { authOptions } from './api/auth/[...nextauth]';
 
 export default function SignIn() {
-
   return (
     <Layout>
-     <div>
-      <button onClick={() => signIn("google")}>Sign in with Google</button>
-    </div>
+      <div>
+        <button onClick={() => signIn('google')}>Sign in with Google</button>
+      </div>
     </Layout>
   );
 }
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
   if (session && session.user) {
     return {
       redirect: {
@@ -27,25 +27,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     };
   }
 
-  const userData = await db.user.findUnique({
-    where: {
-      id: session.user.uid,
-    },
-  });
-
-  if (userData) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false,
-      },
-    };
-  }
-  const user = JSON.parse(JSON.stringify(userData));
-
   return {
-    props: {
-      user,
-    },
+    props: {},
   };
 };

@@ -1,12 +1,12 @@
 import { typeList } from '@/data/prompt';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import Layout from '../layout';
 import { db } from '@/lib/prisma';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { authOptions } from '../api/auth/[...nextauth]';
+import Layout from '../layout';
 
 export default function NewBot() {
   const router = useRouter();

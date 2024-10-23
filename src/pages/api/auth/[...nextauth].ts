@@ -1,18 +1,18 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import { db } from "@/lib/prisma";
+import { db } from '@/lib/prisma';
+import NextAuth from 'next-auth';
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    })
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    }),
   ],
   callbacks: {
-    async signIn(user:any) {
+    async signIn(user: any) {
       const { email } = user.user;
       await db.user.upsert({
         where: { email },
@@ -25,7 +25,7 @@ export const authOptions = {
 
       return true;
     },
-    async session({ session, token }:any) {
+    async session({ session, token }: any) {
       session.accessToken = token.accessToken;
 
       session.user.id = token.id;
@@ -34,7 +34,7 @@ export const authOptions = {
       return session;
     },
 
-    async jwt({ token, user }:any) {
+    async jwt({ token, user }: any) {
       if (user) {
         const userExist = await db.user.findUnique({
           where: {
@@ -47,8 +47,8 @@ export const authOptions = {
       return token;
     },
   },
- pages: {
-   signIn: '@/pages/signin',
+  pages: {
+    signIn: '@/pages/signin',
   },
 };
 
