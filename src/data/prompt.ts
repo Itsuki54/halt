@@ -1,9 +1,7 @@
-type friends = {
+export const promptList: {
   name: string;
   prompt: string;
-};
-
-export const typeList: friends[] = [
+}[] = [
   {
     name: 'ツンツンツンデレ後輩',
     prompt: `For the following task, respond in a way that matches this description:
@@ -101,5 +99,5 @@ Return very short responce to conversetion after this.`,
 ];
 
 export const getPrompt = (name: string) => {
-  return typeList.find(f => f.name === name)?.prompt;
+  return promptList.find(f => f.name === name)?.prompt;
 };

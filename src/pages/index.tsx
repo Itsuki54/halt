@@ -73,12 +73,12 @@ export default function Home({ user, bot }: Props) {
           onChange={e => setInput(e.target.value)}
           placeholder='Type your message...'
           className='w-full p-2 mt-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
-          />
+        />
         <button onClick={handleSendMessage} className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition'>
           Send
         </button>
       </div>
-  </Layout>
+    </Layout>
   );
 }
 
