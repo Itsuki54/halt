@@ -3,8 +3,8 @@
 ```bash
 npm install
 npm run dev
-prisma generate
-prisma migrate dev
+npx prisma generate
+npx prisma migrate dev
 ```
 
 # ローカルでの実行
