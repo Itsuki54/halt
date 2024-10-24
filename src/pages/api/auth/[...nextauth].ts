@@ -1,6 +1,5 @@
 import { db } from '@/lib/prisma';
 import NextAuth from 'next-auth';
-import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions = {
@@ -47,7 +46,7 @@ export const authOptions = {
     },
   },
   pages: {
-    signIn: '@/pages/signin',
+    signIn: '/signin',
   },
 };
 

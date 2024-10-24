@@ -1,89 +1,138 @@
-import { getPrompt } from '@/data/prompt';
+import LoginRequired from '@/components/auth/LoginRequired';
 import { db } from '@/lib/prisma';
-import {
-  Bot,
-  User,
-} from '@prisma/client';
+import Layout from '@/pages/layout';
+import { Bot, User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { useState } from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
-import Layout from './layout';
 
 interface Props {
-  user: User;
-  bot: Bot;
+  user: User | null;
+  bot: Bot | null;
 }
 
 export default function Home({ user, bot }: Props) {
-  const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState('');
 
   const handleSendMessage = async () => {
+    if (!bot) return;
     try {
       const response = await fetch('/api/chatgpt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: input, prompt: getPrompt(bot.type) }),
+        body: JSON.stringify({ message: input, prompt: bot.type }),
       });
 
       const data = await response.json();
       const chatgptResponse = data.chatgptResponse;
-      setMessages([...messages, { sender: 'user', text: input }, {
-        sender: 'bot',
-        text: chatgptResponse,
-      }]);
-      const logResponse = await fetch('/api/log', {
+
+      setMessages([
+        ...messages,
+        { sender: 'user', text: input },
+        { sender: 'bot', text: chatgptResponse },
+      ]);
+
+      await fetch('/api/log', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
-          botId: bot.id,
+          userId: user?.id,
+          botId: bot?.id,
           message: input,
           response: chatgptResponse,
         }),
       });
+
       setInput('');
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error sending message:', error);
     }
   };
+
+  if (!user) {
+    return (
+      <>
+        <LoginRequired />
+      </>
+    );
+  }
+
+  if (!bot) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+          <h1 className="text-2xl font-bold mb-4">Botがありません</h1>
+          <p className="mb-6">Botを作成するには下のボタンをクリックしてください。</p>
+          <button
+            onClick={() => window.location.href = `/bots/new?userId=${user.id}`}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150"
+          >
+            Botを作成する
+          </button>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      <h1 className='text-4xl font-fantasy text-white text-center mb-6 drop-shadow-lg'>Welcome to the Realm</h1>
-      <div className='flex flex-col items-center bg-white bg-opacity-10 backdrop-blur-md p-4 rounded-lg shadow-inner max-h-80 overflow-y-auto'>
-        {messages.map((msg, index) => (
-          <div key={index} className={`w-full p-2 mb-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-200 text-blue-900' : 'bg-green-200 text-green-900'}`}>
-            {msg.text}
+      <div className="flex flex-col h-full" style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
+        <div className="basis-11/12 overflow-y-auto p-4">
+          <div className="flex flex-col space-y-2">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`p-2 rounded-lg max-w-xs ${
+                    msg.sender === 'user'
+                      ? 'bg-[rgb(0,109,113)] text-white'
+                      : 'bg-white text-[rgb(0,109,113)]'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-        <input
-          type='text'
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder='Type your message...'
-          className='w-full p-2 mt-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
-        />
-        <button onClick={handleSendMessage} className='mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition'>
-          Send
-        </button>
+        </div>
+        <div className="basis-1/12 flex items-center mb-2 mx-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
+          <input
+            type="text"
+            placeholder="何か悩んでる？相談に乗るよ！"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="px-4 flex-1 h-full placeholder-gray-700 outline-none"
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+          />
+          <div
+            onClick={handleSendMessage}
+            className="flex items-center justify-center p-2 m-4"
+            style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
+          >
+            <img src="/send.png" alt="send" className="w-full" />
+          </div>
+        </div>
       </div>
     </Layout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ctx => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
   if (!session || !session.user) {
     return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
+      props: {
+        user: null,
+        bot: null,
       },
     };
   }
@@ -96,13 +145,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   if (!userData) {
     return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
+      props: {
+        user: null,
+        bot: null,
       },
     };
   }
-  const user = JSON.parse(JSON.stringify(userData));
 
   const botData = await db.bot.findUnique({
     where: {
@@ -110,19 +158,10 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
     },
   });
 
-  const bot = JSON.parse(JSON.stringify(botData));
-  if (!bot) {
-    return {
-      redirect: {
-        destination: `/bots/new?userId=${user.id}`,
-        permanent: false,
-      },
-    };
-  }
   return {
     props: {
-      user,
-      bot,
+      user: JSON.parse(JSON.stringify(userData)),
+      bot: botData ? JSON.parse(JSON.stringify(botData)) : null,
     },
   };
 };

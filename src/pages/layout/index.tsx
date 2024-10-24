@@ -1,12 +1,29 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-export default function Layout({ children }: { children: React.ReactNode; }) {
+import { Header } from '@/layouts/Header';
+import { Sidebar } from '@/layouts/Sidebar';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
+
+interface Props {
+  children: React.ReactNode;
+}
+
+const Layout = ({ children }: Props) => {
   return (
-    <div className='flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
-      <div className='bg-white shadow-xl rounded-lg p-8 max-w-lg w-full space-y-6'>
-        {children}
+    <div className='h-screen bg-cover bg-center' style={{ backgroundImage: 'url(\'/inside.webp\')' }}>
+      <div className='flex h-screen px-8 py-4'>
+        <div className='basis-1/4'>
+          <Sidebar />
+        </div>
+        <main className='basis-1/2'>
+          {children}
+        </main>
+        <div className='basis-1/4'></div>
         <SpeedInsights />
       </div>
     </div>
   );
-}
+};
+
+export default Layout;

@@ -22,6 +22,7 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
         response,
       },
     });
+
     return res.status(200).json({ status: 'success', data: bot });
   }
   catch (e) {
@@ -29,7 +30,7 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
     else {
-      return res.status(500).json({ status: 'error', error: e });
+      return res.status(500).json({ status: 'error', error: 'Unknown error occurred' });
     }
   }
 }
