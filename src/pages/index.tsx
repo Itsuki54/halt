@@ -7,6 +7,7 @@ import {
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
+import Image from 'next/image';
 import { useState } from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
 
@@ -121,7 +122,7 @@ export default function Home({ user, bot }: Props) {
             className='flex items-center justify-center p-2 m-4'
             style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
           >
-            <img src='/send.png' alt='send' className='w-full' />
+            <Image src='/send.png' alt='send' className='w-full' />
           </div>
         </div>
       </div>
