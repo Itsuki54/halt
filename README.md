@@ -4,7 +4,6 @@
 npm install
 npm run dev
 prisma generate
-prisma migrate dev
 ```
 
 # ローカルでの実行
