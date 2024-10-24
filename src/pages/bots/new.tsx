@@ -1,8 +1,12 @@
-import { typeList } from '@/data/prompt';
+import { promptList } from '@/data/prompt';
+import { db } from '@/lib/prisma';
+import Layout from '@/pages/layout';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import Layout from '../layout';
+import { authOptions } from '../api/auth/[...nextauth]';
 
 export default function NewBot() {
   const router = useRouter();
@@ -12,7 +16,7 @@ export default function NewBot() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const friend = typeList.find(f => f.name === type);
+    const friend = promptList.find(f => f.name === type);
     if (!friend) {
       toast.error('Please select a friend');
       return;
@@ -47,7 +51,7 @@ export default function NewBot() {
                 Select an AI Friend
               </label>
               <div className='grid grid-cols-2 gap-4'>
-                {typeList.map(friend => (
+                {promptList.map(friend => (
                   <div
                     key={friend.name}
                     onClick={() => setType(friend.name)}
@@ -72,3 +76,53 @@ export default function NewBot() {
     </Layout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ctx => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+  if (!session || !session.user) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+
+  const userData = await db.user.findUnique({
+    where: {
+      id: session.user.uid,
+    },
+  });
+
+  if (!userData) {
+    return {
+      redirect: {
+        destination: '/signin',
+        permanent: false,
+      },
+    };
+  }
+  const user = JSON.parse(JSON.stringify(userData));
+
+  const botData = await db.bot.findUnique({
+    where: {
+      userId: session.user.uid,
+    },
+  });
+
+  const bot = JSON.parse(JSON.stringify(botData));
+  if (bot) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      user,
+    },
+  };
+};

@@ -1,3 +1,5 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 import { Header } from '@/layouts/Header';
 import { Sidebar } from '@/layouts/Sidebar';
 import { GetServerSideProps } from 'next';
@@ -18,6 +20,7 @@ const Layout = ({ children }: Props) => {
           {children}
         </main>
         <div className='basis-1/4'></div>
+        <SpeedInsights />
       </div>
     </div>
   );

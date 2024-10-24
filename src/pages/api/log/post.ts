@@ -1,6 +1,4 @@
 import { db } from '@/lib/prisma';
-import argon2 from 'argon2';
-import crypto from 'crypto';
 import {
   NextApiRequest,
   NextApiResponse,
@@ -8,10 +6,6 @@ import {
 import bot from '../bot';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
-  console.log(
-    'req.body',
-    req.body,
-  );
   try {
     const { userId, botId, message, response } = req.body;
 

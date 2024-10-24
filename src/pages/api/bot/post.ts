@@ -1,6 +1,4 @@
 import { db } from '@/lib/prisma';
-import argon2 from 'argon2';
-import crypto from 'crypto';
 import {
   NextApiRequest,
   NextApiResponse,

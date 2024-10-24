@@ -18,7 +18,6 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
       },
       data: {
         email,
-        password,
       },
     });
     return res.status(200).json({ status: 'success', data: user });

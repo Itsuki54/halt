@@ -3,9 +3,7 @@
 ```bash
 npm install
 npm run dev
-docker compose up -d
-prisma generate
-prisma migrate dev
+npx prisma generate
 ```
 
 # ローカルでの実行
