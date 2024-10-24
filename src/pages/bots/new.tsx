@@ -1,4 +1,4 @@
-import { typeList } from '@/data/prompt';
+import { promptList } from '@/data/prompt';
 import { db } from '@/lib/prisma';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
@@ -16,7 +16,7 @@ export default function NewBot() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const friend = typeList.find(f => f.name === type);
+    const friend = promptList.find(f => f.name === type);
     if (!friend) {
       toast.error('Please select a friend');
       return;
@@ -51,7 +51,7 @@ export default function NewBot() {
                 Select an AI Friend
               </label>
               <div className='grid grid-cols-2 gap-4'>
-                {typeList.map(friend => (
+                {promptList.map(friend => (
                   <div
                     key={friend.name}
                     onClick={() => setType(friend.name)}
