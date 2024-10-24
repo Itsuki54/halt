@@ -26,7 +26,6 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
     const hash = await bcrypt.hash(password + pepper, salt);
     const user = await db.user.create({
       data: {
-        name: 'New User',
         email,
       },
     });

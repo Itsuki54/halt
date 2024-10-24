@@ -18,7 +18,6 @@ export const authOptions = {
         where: { email },
         update: {},
         create: {
-          name: user.user.name,
           email: user.user.email,
         },
       });
