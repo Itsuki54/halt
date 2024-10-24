@@ -6,12 +6,7 @@ import {
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
 import { useState } from 'react';
-import {
-  IoMan,
-  IoWoman,
-} from 'react-icons/io5';
 import { authOptions } from './api/auth/[...nextauth]';
 import Layout from './layout';
 
