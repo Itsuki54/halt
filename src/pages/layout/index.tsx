@@ -1,9 +1,6 @@
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-import { Header } from '@/layouts/Header';
 import { Sidebar } from '@/layouts/Sidebar';
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 
 interface Props {
   children: React.ReactNode;
