@@ -1,4 +1,3 @@
-
 export function Sidebar() {
   const handleRedirect = (url: string) => {
     window.location.href = url;
