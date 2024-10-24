@@ -23,10 +23,10 @@ model User {
 model Bot {
   id     String @id @default(uuid())
   type   String
-  groupId String
+  groupId String?
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
-  group  Group  @relation(fields: [groupId], references: [id])
+  group  Group?  @relation(fields: [groupId], references: [id])
   logs   Log[]
 }
 
