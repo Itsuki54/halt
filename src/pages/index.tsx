@@ -32,7 +32,7 @@ export default function Home({ user, bot }: Props) {
       });
 
       const data = await response.json();
-      const {chatgptResponse} = data;
+      const { chatgptResponse } = data;
 
       setMessages([
         ...messages,
@@ -61,9 +61,7 @@ export default function Home({ user, bot }: Props) {
   };
 
   if (!user) {
-    return (
-      <LoginRequired />
-    );
+    return <LoginRequired />;
   }
 
   if (!bot) {

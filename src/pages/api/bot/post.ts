@@ -25,8 +25,7 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
-    
-      return res.status(500).json({ status: 'error', error: e });
-    
+
+    return res.status(500).json({ status: 'error', error: e });
   }
 }

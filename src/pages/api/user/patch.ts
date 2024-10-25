@@ -27,7 +27,6 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
 
-      return res.status(500).json({ status: 'error', error: e });
-
+    return res.status(500).json({ status: 'error', error: e });
   }
 }

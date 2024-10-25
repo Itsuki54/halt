@@ -31,10 +31,9 @@ export default async function handler(
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
-    
-      return res
-        .status(500)
-        .json({ status: 'error', error: 'An unexpected error has occurred' });
-    
+
+    return res
+      .status(500)
+      .json({ status: 'error', error: 'An unexpected error has occurred' });
   }
 }

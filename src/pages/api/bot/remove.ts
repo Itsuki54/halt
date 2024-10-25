@@ -26,8 +26,7 @@ export default async function remove(
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
-    
-      return res.status(500).json({ status: 'error', error: e });
-    
+
+    return res.status(500).json({ status: 'error', error: e });
   }
 }
