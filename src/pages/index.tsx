@@ -4,12 +4,14 @@ import Layout from '@/pages/layout';
 import {
   Bot,
   User,
+  Log,
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { useState } from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
+import { ChatHistoryBar } from '@/layouts/ChatHistoryBar';
 
 interface Props {
   user: User | null;
@@ -83,43 +85,49 @@ export default function Home({ user, bot }: Props) {
 
   return (
     <Layout>
-      <div className='flex flex-col h-full' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
-        <div className='basis-11/12 overflow-y-auto p-4'>
-          <div className='flex flex-col space-y-2'>
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+      <div className="chat flex w-full h-full relative">
+
+        <div className="flex flex-col h-full w-full lg:w-3/4" style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
+          <div className="basis-11/12 overflow-y-auto p-4">
+            <div className="flex flex-col space-y-2">
+              {messages.map((msg, index) => (
                 <div
-                  className={`p-2 rounded-lg max-w-xs ${
-                    msg.sender === 'user'
+                  key={index}
+                  className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`p-2 rounded-lg max-w-xs ${msg.sender === 'user'
                       ? 'bg-[rgb(0,109,113)] text-white'
                       : 'bg-white text-[rgb(0,109,113)]'
-                  }`}
-                >
-                  {msg.text}
+                      }`}
+                  >
+                    {msg.text}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          <div className="basis-1/12 flex items-center mb-2 mx-4" style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
+            <input
+              className="px-4 flex-1 h-full placeholder-gray-700 outline-none"
+              onChange={e => setInput(e.target.value)}
+              placeholder="何か悩んでる？相談に乗るよ！"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+              type="text"
+              value={input}
+            />
+            <div
+              className="flex items-center justify-center p-2 m-4"
+              onClick={handleSendMessage}
+              style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
+            >
+              <Image alt="send" width={30} height={30} className="w-full" src="/send.png" />
+            </div>
           </div>
         </div>
-        <div className='basis-1/12 flex items-center mb-2 mx-4' style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
-          <input
-            className='px-4 flex-1 h-full placeholder-gray-700 outline-none'
-            onChange={e => setInput(e.target.value)}
-            placeholder='何か悩んでる？相談に乗るよ！'
-            style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
-            type='text'
-            value={input}
-          />
-          <div
-            className='flex items-center justify-center p-2 m-4'
-            onClick={handleSendMessage}
-            style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
-          >
-            <Image alt='send' width={30} height={30} className='w-full' src='/send.png' />
-          </div>
+        <div className={`h-full lg:w-1/4`}>
+          <ChatHistoryBar groups={[]} />
         </div>
       </div>
     </Layout>
