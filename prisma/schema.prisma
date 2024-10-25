@@ -26,7 +26,7 @@ model Bot {
   groupId String?
   userId String
   user   User   @relation(fields: [userId], references: [id])
-  group  Group?  @relation(fields: [groupId], references: [id])
+  group  Group?  @relation(fields: [groupId])
   logs   Log[]
 }
 
