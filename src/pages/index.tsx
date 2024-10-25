@@ -118,7 +118,7 @@ export default function Home({ user, bot }: Props) {
             onClick={handleSendMessage}
             style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
           >
-            <Image alt='send' className='w-full' src='/send.png' />
+            <Image alt='send' width={30} height={30} className='w-full' src='/send.png' />
           </div>
         </div>
       </div>
