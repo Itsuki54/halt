@@ -46,7 +46,7 @@ model Log {
 model Group {
   id     String @id @default(uuid())
   name   String
-  botId  String 
+  botId  String @unique
   bot    Bot    @relation(fields: [botId], references: [id])
   logs   Log[]
 }
