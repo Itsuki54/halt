@@ -5,7 +5,7 @@ export function Sidebar() {
   const router = useRouter();
   return (
     <div className='h-full w-full text-white'>
-      <Image alt='logo' className="mb-4" height={100} src='/C2U_logo.png' width={100} />
+      <Image alt='logo' height={100} src='/C2U_logo.png' width={100} />
       <div className='flex flex-col' style={{ gap: '20px' }}>
         <div className='flex items-center border bg-black' onClick={() => router.push('/#')} style={{ width: '50%', backgroundColor: 'rgba(0, 195, 202, 0.3)', borderColor: 'rgb(0, 195, 202)' }}>
           <div className='bg-blue-500 flex items-center justify-center p-1 h-full' style={{ width: '20%', backgroundColor: 'rgba(0, 195, 202, 1)' }}>
