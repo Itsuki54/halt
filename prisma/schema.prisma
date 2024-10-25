@@ -16,7 +16,7 @@ datasource db {
 model User {
   id    String @id @default(uuid())
   email String @unique
-  bot   Bot[]
+  bots   Bot[]
   logs  Log[]
 }
 
@@ -26,7 +26,7 @@ model Bot {
   groupId String?
   userId  String
   user    User   @relation(fields: [userId], references: [id])
-  group   Group? @relation(fields: [groupId]) // referencesを削除
+  group   Group? 
   logs    Log[]
 }
 
@@ -46,7 +46,7 @@ model Log {
 model Group {
   id     String @id @default(uuid())
   name   String
-  botId  String @unique
+  botId  String 
   bot    Bot    @relation(fields: [botId], references: [id])
   logs   Log[]
 }
