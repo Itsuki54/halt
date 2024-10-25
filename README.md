@@ -11,8 +11,11 @@ npx prisma generate
 ```bash
 npm run dev
 ```
+
 ### CIで落ちたら
+
 ```
 npm run fix
 ```
+
 これでエラーが出たらその部分を修正してください
