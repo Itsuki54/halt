@@ -10,7 +10,8 @@
     "lint": "eslint '**/*.{js,ts,tsx}'",
     "lint:fix": "eslint '**/*.{js,ts,tsx}' --fix",
     "format": "dprint fmt",
-    "postbuild": "next-sitemap"
+    "postbuild": "next-sitemap",
+    "fix": "npm run lint:fix && npm run format"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
