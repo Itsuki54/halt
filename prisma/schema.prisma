@@ -21,13 +21,13 @@ model User {
 }
 
 model Bot {
-  id     String @id @default(uuid())
-  type   String
+  id      String @id @default(uuid())
+  type    String
   groupId String?
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  group  Group?  @relation(fields: [groupId])
-  logs   Log[]
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group? @relation(fields: [groupId]) // referencesを削除
+  logs    Log[]
 }
 
 model Log {
@@ -36,6 +36,8 @@ model Log {
   user      User     @relation(fields: [userId], references: [id])
   botId     String
   bot       Bot      @relation(fields: [botId], references: [id])
+  groupId   String?
+  group     Group?   @relation(fields: [groupId], references: [id])
   message   String
   response  String
   createdAt DateTime @default(now())
@@ -46,4 +48,5 @@ model Group {
   name   String
   botId  String @unique
   bot    Bot    @relation(fields: [botId], references: [id])
+  logs   Log[]
 }
