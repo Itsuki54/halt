@@ -1,4 +1,2 @@
-module.exports = {
-  siteUrl: 'https://prototype-connect2u.vercel.app',
-  generateRobotsTxt: true,
-};
+export const siteUrl = 'https://prototype-connect2u.vercel.app';
+export const generateRobotsTxt = true;
