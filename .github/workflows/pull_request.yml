@@ -1,0 +1,14 @@
+name: 'Pull Request Assign Author'
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  assignAuthor:
+    name: Assign author to PR
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Assign author to PR
+        uses: technote-space/assign-author@v1
