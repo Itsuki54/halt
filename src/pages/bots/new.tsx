@@ -104,7 +104,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   }
   const user = JSON.parse(JSON.stringify(userData));
 
-  const botData = await db.bot.findUnique({
+  const botData = await db.bot.findFirst({
     where: {
       userId: session.user.uid,
     },
