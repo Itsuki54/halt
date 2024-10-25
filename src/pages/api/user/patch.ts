@@ -6,7 +6,7 @@ import {
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id: uid, email, password, isSubscribed, readTutorial } = req.body;
+    const { id: uid, email } = req.body;
     if (!uid) {
       return res
         .status(400)
@@ -26,8 +26,8 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
-    else {
+
       return res.status(500).json({ status: 'error', error: e });
-    }
+
   }
 }

@@ -1,26 +1,23 @@
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 export default function LoginRequired() {
-  const [error, setError] = useState('');
   const router = useRouter();
-  const query = router.query;
 
   const handleGoogleSignIn = async () => {
     try {
       const response = await signIn('google', { redirect: false });
       if (!response || response.error) {
-        setError(response?.error || 'Googleログインに失敗しました');
+        toast.error('Googleログインに失敗しました');
       }
       else {
         toast.success('Googleでログインしました！');
         router.push('/');
       }
     }
-    catch (error) {
-      setError('Googleログインに失敗しました');
+    catch {
+      toast.error('Googleログインに失敗しました');
     }
   };
   return (
@@ -31,8 +28,8 @@ export default function LoginRequired() {
           Connect2U では、あなたのパーソナルアシスタントとチャットを通じて、質問や悩みを相談できます。 まだログインしていないようです。下のボタンを押してログインして、パーソナルアシスタントとの会話を始めましょう！
         </p>
         <button
-          onClick={handleGoogleSignIn}
           className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
+          onClick={handleGoogleSignIn}
         >
           ログイン
         </button>

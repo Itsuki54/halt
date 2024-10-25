@@ -32,7 +32,7 @@ export default function Home({ user, bot }: Props) {
       });
 
       const data = await response.json();
-      const chatgptResponse = data.chatgptResponse;
+      const {chatgptResponse} = data;
 
       setMessages([
         ...messages,
@@ -62,9 +62,7 @@ export default function Home({ user, bot }: Props) {
 
   if (!user) {
     return (
-      <>
-        <LoginRequired />
-      </>
+      <LoginRequired />
     );
   }
 
@@ -75,8 +73,8 @@ export default function Home({ user, bot }: Props) {
           <h1 className='text-2xl font-bold mb-4'>Botがありません</h1>
           <p className='mb-6'>Botを作成するには下のボタンをクリックしてください。</p>
           <button
-            onClick={() => window.location.href = `/bots/new?userId=${user.id}`}
             className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
+            onClick={() => window.location.href = `/bots/new?userId=${user.id}`}
           >
             Botを作成する
           </button>
@@ -110,19 +108,19 @@ export default function Home({ user, bot }: Props) {
         </div>
         <div className='basis-1/12 flex items-center mb-2 mx-4' style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
           <input
-            type='text'
-            placeholder='何か悩んでる？相談に乗るよ！'
-            value={input}
-            onChange={e => setInput(e.target.value)}
             className='px-4 flex-1 h-full placeholder-gray-700 outline-none'
+            onChange={e => setInput(e.target.value)}
+            placeholder='何か悩んでる？相談に乗るよ！'
             style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
+            type='text'
+            value={input}
           />
           <div
-            onClick={handleSendMessage}
             className='flex items-center justify-center p-2 m-4'
+            onClick={handleSendMessage}
             style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
           >
-            <Image src='/send.png' alt='send' className='w-full' />
+            <Image alt='send' className='w-full' src='/send.png' />
           </div>
         </div>
       </div>

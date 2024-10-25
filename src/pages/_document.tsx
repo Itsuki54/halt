@@ -9,22 +9,22 @@ export default function Document() {
   return (
     <Html lang='ja'>
       <Head>
-        <meta name='description' content='Connect2uは、人間らしいAIによる24時間対応の感情的サポートや悩み相談を提供するサービスです。' />
-        <meta name='keywords' content='AI 相談, 感情サポート, AI アドバイス, 24時間 AI サポート, メンタルヘルス AI, Connect2u' />
-        <meta name='author' content='Connect2u' />
+        <meta content='Connect2uは、人間らしいAIによる24時間対応の感情的サポートや悩み相談を提供するサービスです。' name='description' />
+        <meta content='AI 相談, 感情サポート, AI アドバイス, 24時間 AI サポート, メンタルヘルス AI, Connect2u' name='keywords' />
+        <meta content='Connect2u' name='author' />
 
-        <meta property='og:title' content='Connect2u - 感情サポートと相談を行うAIサービス' />
-        <meta property='og:description' content='Connect2uは、人間のように感情を理解し、24時間対応の感情サポートと相談を提供するAIサービスです。' />
-        <meta property='og:image' content='https://example.com/og-image.jpg' />
-        <meta property='og:url' content='https://prototype-connect2u.vercel.app' />
-        <meta property='og:type' content='website' />
+        <meta content='Connect2u - 感情サポートと相談を行うAIサービス' property='og:title' />
+        <meta content='Connect2uは、人間のように感情を理解し、24時間対応の感情サポートと相談を提供するAIサービスです。' property='og:description' />
+        <meta content='https://example.com/og-image.jpg' property='og:image' />
+        <meta content='https://prototype-connect2u.vercel.app' property='og:url' />
+        <meta content='website' property='og:type' />
 
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content='Connect2u - AIによる相談と感情サポート' />
-        <meta name='twitter:description' content='Connect2uのAIは、人間らしい感情サポートとアドバイスを24時間提供し、あなたのメンタルヘルスをサポートします。' />
-        <meta name='twitter:image' content='https://example.com/twitter-image.jpg' />
+        <meta content='summary_large_image' name='twitter:card' />
+        <meta content='Connect2u - AIによる相談と感情サポート' name='twitter:title' />
+        <meta content='Connect2uのAIは、人間らしい感情サポートとアドバイスを24時間提供し、あなたのメンタルヘルスをサポートします。' name='twitter:description' />
+        <meta content='https://example.com/twitter-image.jpg' name='twitter:image' />
 
-        <link rel='canonical' href='https://prototype-connect2u.vercel.app' />
+        <link href='https://prototype-connect2u.vercel.app' rel='canonical' />
 
         <script type='application/ld+json'>
           {`

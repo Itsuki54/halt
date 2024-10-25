@@ -45,7 +45,7 @@ export default function NewBot() {
           <h1 className='text-3xl font-semibold text-center text-gray-800 mb-6'>
             Create a New AI Friend
           </h1>
-          <form onSubmit={handleSubmit} className='space-y-6'>
+          <form className='space-y-6' onSubmit={handleSubmit}>
             <div>
               <label className='text-lg font-medium text-gray-700 mb-2 block'>
                 Select an AI Friend
@@ -54,8 +54,8 @@ export default function NewBot() {
                 {promptList.map(friend => (
                   <div
                     key={friend.name}
-                    onClick={() => setType(friend.name)}
                     className={`cursor-pointer p-4 border rounded-lg shadow-sm transition-all duration-300 hover:shadow-lg ${type === friend.name ? 'border-blue-600 bg-blue-50' : 'border-gray-300'}`}
+                    onClick={() => setType(friend.name)}
                   >
                     <p className='text-center font-semibold text-gray-700'>
                       {friend.name}
@@ -65,8 +65,8 @@ export default function NewBot() {
               </div>
             </div>
             <button
-              type='submit'
               className='w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1'
+              type='submit'
             >
               Create
             </button>

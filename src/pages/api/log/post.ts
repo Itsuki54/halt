@@ -3,7 +3,6 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from 'next';
-import bot from '../bot';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -29,8 +28,8 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
     if (e instanceof Error) {
       return res.status(500).json({ status: 'error', error: e.message });
     }
-    else {
+    
       return res.status(500).json({ status: 'error', error: 'Unknown error occurred' });
-    }
+    
   }
 }

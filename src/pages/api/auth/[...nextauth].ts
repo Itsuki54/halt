@@ -11,6 +11,7 @@ export const authOptions = {
     }),
   ],
   callbacks: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async signIn(user: any) {
       const { email } = user.user;
       await db.user.upsert({
@@ -23,6 +24,8 @@ export const authOptions = {
 
       return true;
     },
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: any) {
       session.accessToken = token.accessToken;
 
@@ -32,6 +35,7 @@ export const authOptions = {
       return session;
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async jwt({ token, user }: any) {
       if (user) {
         const userExist = await db.user.findUnique({

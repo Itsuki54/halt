@@ -6,6 +6,7 @@ import '../styles/globals.css';
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) {
   return (
     <SessionProvider session={session}>
