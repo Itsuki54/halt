@@ -10,7 +10,7 @@ import {
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import { authOptions } from './api/auth/[...nextauth]';
 import { ChatHistoryBar } from '@/layouts/ChatHistoryBar';
 import { useRouter } from 'next/router';
@@ -38,14 +38,29 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
     }
   }
 
-  useEffect(() => {
-    if (currentGroup) {
-      setMessages(currentGroup.logs.map(log => ({
-        sender: log.response,
+useEffect(() => {
+  if (currentGroup) {
+    const formattedMessages: SetStateAction<{ sender: string; text: string; }[]> = [];
+
+    currentGroup.logs.forEach(log => {
+      // まずユーザーのメッセージを追加
+      formattedMessages.push({
+        sender: 'user',
         text: log.message,
-      })));
-    }
-  }, [currentGroup]);
+      });
+
+      // 次にBotの応答があれば追加
+      if (log.response) {
+        formattedMessages.push({
+          sender: 'bot',
+          text: log.response,
+        });
+      }
+    });
+
+    setMessages(formattedMessages);
+  }
+}, [currentGroup]);
 
   const handleSendMessage = async () => {
     if (!currentGroup) return;
