@@ -1,12 +1,12 @@
 import { db } from '@/lib/prisma';
 import {
-  NextApiRequest,
-  NextApiResponse,
+    NextApiRequest,
+    NextApiResponse,
 } from 'next';
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id: uid, email } = req.body;
+    const { id: uid, googleId } = req.body;
     if (!uid) {
       return res
         .status(400)
@@ -17,7 +17,7 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
         id: uid,
       },
       data: {
-        email,
+        googleId,
       },
     });
     return res.status(200).json({ status: 'success', data: user });

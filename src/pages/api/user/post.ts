@@ -7,15 +7,15 @@ import {
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { email } = req.body;
-    if (!email) {
+    const { googleId } = req.body;
+    if (!googleId) {
       return res
         .status(400)
         .json({ status: 'error', error: 'User Data not provided' });
     }
     const user = await db.user.create({
       data: {
-        email,
+        googleId,
       },
     });
     return res.status(200).json({ status: 'success', data: user });
