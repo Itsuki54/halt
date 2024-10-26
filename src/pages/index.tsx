@@ -4,7 +4,7 @@ import Layout from '@/pages/layout';
 import {
   Bot,
   User,
-  Log,
+  Group
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
@@ -16,14 +16,22 @@ import { ChatHistoryBar } from '@/layouts/ChatHistoryBar';
 interface Props {
   user: User | null;
   bot: Bot | null;
+  currentGroup: Group | null;
+  groups: Group[];
 }
 
-export default function Home({ user, bot }: Props) {
+export default function Home({ user, bot,currentGroup, groups }: Props) {
   const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
   const [input, setInput] = useState('');
+  const [inCreation, setInCreation] = useState(false);
+
+  const onClickedNewBot = () => {
+    setInCreation(true);
+  }
 
   const handleSendMessage = async () => {
     if (!bot) return;
+    if (!currentGroup) return;
     try {
       const response = await fetch('/api/chatgpt', {
         method: 'POST',
@@ -48,10 +56,9 @@ export default function Home({ user, bot }: Props) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user?.id,
-          botId: bot?.id,
           message: input,
           response: chatgptResponse,
+          groupId: currentGroup.id,
         }),
       });
 
@@ -66,7 +73,7 @@ export default function Home({ user, bot }: Props) {
     return <LoginRequired />;
   }
 
-  if (!bot) {
+  if (inCreation || !bot || !currentGroup) {
     return (
       <Layout>
         <div className='flex flex-col items-center justify-center h-screen bg-gray-100'>
@@ -74,7 +81,9 @@ export default function Home({ user, bot }: Props) {
           <p className='mb-6'>Botを作成するには下のボタンをクリックしてください。</p>
           <button
             className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-            onClick={() => window.location.href = `/bots/new?userId=${user.id}`}
+            onClick={() =>{
+              setInCreation(false); //
+               window.location.href = `/bots/new?userId=${user.id}`}}
           >
             Botを作成する
           </button>
@@ -83,6 +92,7 @@ export default function Home({ user, bot }: Props) {
     );
   }
 
+  if(!inCreation) {
   return (
     <Layout>
       <div className="chat flex w-full h-full relative">
@@ -127,11 +137,13 @@ export default function Home({ user, bot }: Props) {
           </div>
         </div>
         <div className={`h-full lg:w-1/4`}>
-          <ChatHistoryBar groups={[]} />
+          <h1>{groups.length}</h1>
+          <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot}/>
         </div>
       </div>
     </Layout>
   );
+}
 }
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -142,10 +154,12 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       props: {
         user: null,
         bot: null,
+        groups: [],
       },
     };
   }
 
+  // ユーザー情報の取得
   const userData = await db.user.findUnique({
     where: {
       id: session.user.uid,
@@ -157,20 +171,45 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
       props: {
         user: null,
         bot: null,
+        currentGroup: null,
+        groups: [],
       },
     };
   }
 
+
+
+  // 特定のユーザーに紐づく Group 情報の取得
+  const groups = await db.group.findMany({
+    where: {
+      botId: session.user.uid,
+    },
+  });
+
+  // 特定のユーザーに紐づく Bot 情報の取得
   const botData = await db.bot.findFirst({
     where: {
       userId: session.user.uid,
     },
   });
 
+  if (!groups[0]) {
+    return {
+      props: {
+        user: JSON.parse(JSON.stringify(userData)),
+        bot: null,
+        currentGroup: null,
+        groups: [],
+      },
+    };
+  }
+
   return {
     props: {
       user: JSON.parse(JSON.stringify(userData)),
       bot: botData ? JSON.parse(JSON.stringify(botData)) : null,
+      currentGroup: groups[0] ? JSON.parse(JSON.stringify(groups[0])) : null, // 特定ユーザーの最初の group を props に追加
+      groups: JSON.parse(JSON.stringify(groups)), // 特定ユーザーの groups を props に追加
     },
   };
 };
