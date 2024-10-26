@@ -17,36 +17,32 @@ model User {
   id    String @id @default(uuid())
   googleId String @unique
   bots   Bot[]
-  logs  Log[]
+  groups Group[]
 }
 
 model Bot {
   id      String @id @default(uuid())
   type    String
-  groupId String?
   userId  String
   user    User   @relation(fields: [userId], references: [id])
-  group   Group? 
-  logs    Log[]
+  group   Group?
 }
 
 model Log {
   id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  botId     String
-  bot       Bot      @relation(fields: [botId], references: [id])
-  groupId   String?
-  group     Group?   @relation(fields: [groupId], references: [id])
   message   String
   response  String
   createdAt DateTime @default(now())
+  groupId   String?
+  group     Group? @relation(fields: [groupId], references: [id])
 }
 
 model Group {
   id     String @id @default(uuid())
   name   String
-  botId  String @unique
-  bot    Bot    @relation(fields: [botId], references: [id])
+  userId String
+  user   User @relation(fields: [userId], references: [id])
+  botId  String   @unique
+  bot    Bot     @relation(fields: [botId], references: [id])
   logs   Log[]
 }

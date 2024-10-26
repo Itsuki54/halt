@@ -6,19 +6,21 @@ import {
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { userId, botId, message, response } = req.body;
+    const {  message, response, groupId } = req.body;
 
-    if (!userId || !botId || !message || !response) {
+    if (!message || !response) {
       return res
         .status(400)
         .json({ status: 'error', error: 'User Data not provided' });
     }
+
+    console.log(groupId);
+
     const bot = await db.log.create({
       data: {
-        userId,
-        botId,
-        message,
-        response,
+        message: message,
+        response: response,
+        groupId: groupId,
       },
     });
 
