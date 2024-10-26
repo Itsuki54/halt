@@ -12,39 +12,32 @@ export const authOptions = {
   ],
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async signIn(user: any) {
-      const { email } = user.user;
+    async signIn({ account }: { account: any; }) {
+      const googleId = account?.providerAccountId;
+      if (!googleId) return false;
+
       await db.user.upsert({
-        where: { email },
+        where: { googleId },
         update: {},
-        create: {
-          email: user.user.email,
-        },
+        create: { googleId },
       });
 
       return true;
     },
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async session({ session, token }: any) {
-      session.accessToken = token.accessToken;
-
+    async session({ session, token }: { session: any; token: any; }) {
       session.user.id = token.id;
       session.user.uid = token.uid;
 
       return session;
     },
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }: { token: any; user?: any; }) {
       if (user) {
         const userExist = await db.user.findUnique({
-          where: {
-            email: user.email,
-          },
+          where: { googleId: user.id },
         });
         token.uid = userExist?.id;
-        token.accessToken = user.access_token;
       }
       return token;
     },
