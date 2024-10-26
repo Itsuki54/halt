@@ -1,7 +1,7 @@
 import { db } from '@/lib/prisma';
 import {
-    NextApiRequest,
-    NextApiResponse,
+  NextApiRequest,
+  NextApiResponse,
 } from 'next';
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
