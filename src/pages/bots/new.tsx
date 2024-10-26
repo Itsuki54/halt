@@ -30,10 +30,10 @@ export default function NewBot() {
 
     const data = await response.json();
     if (data.status === 'success') {
+      const { groupId } = data; // groupIdを取得
       toast.success('AI friend created successfully');
-      router.push('/');
-    }
-    else {
+      router.push(`/?groupId=${groupId}`); // groupIdをURLに含めて遷移
+    } else {
       toast.error('Failed to create AI friend');
     }
   };

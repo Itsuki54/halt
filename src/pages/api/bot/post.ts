@@ -26,7 +26,11 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    return res.status(200).json({ status: 'success', data: bot });
+    return res.status(200).json({
+      status: 'success',
+      data: bot,
+      groupId: bot.group ? bot.group.id : null
+    });
   } catch (e) {
     if (e instanceof Error) {
       console.log(e);
