@@ -3,9 +3,10 @@ import { useRouter } from 'next/router';
 
 interface Props {
     groups: Group[]; // 複数のGroupを受け取る
+    onClickedNewBot: () => void;
 }
 
-export function ChatHistoryBar({ groups,}: Props) {
+export function ChatHistoryBar({ groups,onClickedNewBot}: Props) {
     const router = useRouter();
 
     return (
@@ -23,6 +24,7 @@ export function ChatHistoryBar({ groups,}: Props) {
                 ))}
                 <li
                     className="cursor-pointer p-2 rounded-md bg-blue-600 hover:bg-blue-500 text-center"
+                    onClick={onClickedNewBot} // Bot作成画面に遷移
                 >
                     <div className="text-sm font-medium">＋新しい悩みを相談する</div>
                 </li>

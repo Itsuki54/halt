@@ -19,6 +19,7 @@ interface Group extends PrismaGroup {
   logs: Log[];
 }
 
+
 interface Props {
   user: User | null;
   bot: Bot | null;
@@ -30,6 +31,12 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
   const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
   const [input, setInput] = useState('');
   const router = useRouter();
+
+  const onClickedNewBot = () => {
+    if (user) {
+      router.push(`/bots/new?userId=${user.id}`);
+    }
+  }
 
   useEffect(() => {
     if (currentGroup) {
@@ -79,6 +86,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
     catch (error) {
       console.error('Error sending message:', error);
     }
+  };
 
     if (!user) {
       return <LoginRequired />;
@@ -101,7 +109,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
               </button>
             </div>
             <div className={`h-full lg:w-1/4`}>
-              <ChatHistoryBar groups={groups} />
+              <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot}/>
             </div>
           </div>
         </Layout>
@@ -152,12 +160,11 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
             </div>
           </div>
           <div className={`h-full lg:w-1/4`}>
-            <ChatHistoryBar groups={groups} />
+            <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot}/>
           </div>
         </div>
       </Layout>
     );
-  }
 }
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
