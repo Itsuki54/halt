@@ -11,40 +11,34 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async signIn(user: any) {
-      const { email } = user.user;
+    async signIn({ user, account }) {
+      // Googleのsubを取得
+      const googleId = account?.providerAccountId;
+      if (!googleId) return false;
+
+      // googleIdでユーザーを検索、存在しない場合は作成
       await db.user.upsert({
-        where: { email },
+        where: { googleId },
         update: {},
-        create: {
-          email: user.user.email,
-        },
+        create: { googleId },
       });
 
       return true;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async session({ session, token }: any) {
-      session.accessToken = token.accessToken;
-
+    async session({ session, token }) {
       session.user.id = token.id;
       session.user.uid = token.uid;
 
       return session;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user }: any) {
+    async jwt({ token, user }) {
       if (user) {
         const userExist = await db.user.findUnique({
-          where: {
-            email: user.email,
-          },
+          where: { googleId: user.id },
         });
         token.uid = userExist?.id;
-        token.accessToken = user.access_token;
       }
       return token;
     },
