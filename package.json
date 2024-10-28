@@ -1,6 +1,7 @@
 {
   "name": "prototype",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "init": "docker compose up -d && prisma migrate dev  && prisma generate",
