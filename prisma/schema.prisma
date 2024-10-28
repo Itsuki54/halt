@@ -16,6 +16,10 @@ datasource db {
 model User {
   id    String @id @default(uuid())
   googleId String @unique
+  gender String?
+  role   String?
+  age    String?
+  job    String?
   bots   Bot[]
   groups Group[]
 }
