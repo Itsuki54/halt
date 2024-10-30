@@ -2,7 +2,12 @@ import LoginRequired from '@/components/auth/LoginRequired';
 import { ChatHistoryBar } from '@/layouts/ChatHistoryBar';
 import { db } from '@/lib/prisma';
 import Layout from '@/pages/layout';
-import { Bot, Group as PrismaGroup, Log, User } from '@prisma/client';
+import {
+  Bot,
+  Log,
+  Group as PrismaGroup,
+  User,
+} from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
@@ -100,6 +105,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
             className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
               } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
           >
+
             <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
           </div>
         </div>
@@ -156,6 +162,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
             } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
         >
+
           <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
         </div>
 
