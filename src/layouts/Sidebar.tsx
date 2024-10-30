@@ -19,14 +19,6 @@ export function Sidebar() {
             Text Chat
           </div>
         </div>
-        <div className='flex items-center border bg-black' onClick={() => router.push('/#')} style={{ width: '100%', backgroundColor: 'rgba(74, 218, 156, 0.3)', borderColor: 'rgb(74, 218, 156)' }}>
-          <div className='bg-blue-500 flex items-center justify-center p-1 h-full' style={{ width: '20%', backgroundColor: 'rgba(74, 218, 156, 1)' }}>
-            <FiSettings size={30} color='white' />
-          </div>
-          <div className='text-2xl flex-1 text-center basis-3/4 h-full flex items-center justify-center font-bold'>
-            User Setting
-          </div>
-        </div>
       </div>
     </div>
   );
