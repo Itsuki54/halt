@@ -2,21 +2,12 @@ import LoginRequired from '@/components/auth/LoginRequired';
 import { ChatHistoryBar } from '@/layouts/ChatHistoryBar';
 import { db } from '@/lib/prisma';
 import Layout from '@/pages/layout';
-import {
-  Bot,
-  Group as PrismaGroup,
-  Log,
-  User,
-} from '@prisma/client';
+import { Bot, Group as PrismaGroup, Log, User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
-import {
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react';
-import { FiSend } from 'react-icons/fi';
+import { SetStateAction, useEffect, useState } from 'react';
+import { FiSend, FiMenu } from 'react-icons/fi';
 import { authOptions } from './api/auth/[...nextauth]';
 
 interface Group extends PrismaGroup {
@@ -31,8 +22,9 @@ interface Props {
 }
 
 export default function Home({ user, bot, currentGroup, groups }: Props) {
-  const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
+  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
 
   const onClickedNewBot = () => {
@@ -43,55 +35,34 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
 
   useEffect(() => {
     if (currentGroup) {
-      const formattedMessages: SetStateAction<{ sender: string; text: string; }[]> = [];
-
+      const formattedMessages: SetStateAction<{ sender: string; text: string }[]> = [];
       currentGroup.logs.forEach(log => {
-        // まずユーザーのメッセージを追加
-        formattedMessages.push({
-          sender: 'user',
-          text: log.message,
-        });
-
-        // 次にBotの応答があれば追加
+        formattedMessages.push({ sender: 'user', text: log.message });
         if (log.response) {
-          formattedMessages.push({
-            sender: 'bot',
-            text: log.response,
-          });
+          formattedMessages.push({ sender: 'bot', text: log.response });
         }
       });
-
       setMessages(formattedMessages);
     }
   }, [currentGroup]);
 
   const handleSendMessage = async () => {
-    if (!currentGroup) return;
-    if (!bot) return;
-    if (!currentGroup) return;
+    if (!currentGroup || !bot) return;
     try {
       const response = await fetch('/api/chatgpt', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: input, prompt: bot.type }),
       });
 
       const data = await response.json();
       const { chatgptResponse } = data;
 
-      setMessages([
-        ...messages,
-        { sender: 'user', text: input },
-        { sender: 'bot', text: chatgptResponse },
-      ]);
+      setMessages([...messages, { sender: 'user', text: input }, { sender: 'bot', text: chatgptResponse }]);
 
       await fetch('/api/log', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: input,
           response: chatgptResponse,
@@ -100,37 +71,14 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
       });
 
       setInput('');
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error sending message:', error);
     }
   };
 
+  // ユーザーが認証されていない場合
   if (!user) {
     return <LoginRequired />;
-  }
-
-  if (!bot || !currentGroup) {
-    return (
-      <Layout>
-        <div className='chat flex w-full h-full relative'>
-          <div className='flex flex-col items-center justify-center h-screenlg:w-3/4'>
-            <p className='mb-6'>Botを作成するには下のボタンをクリックしてください。</p>
-            <button
-              className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-              onClick={() => {
-                router.push(`/bots/new?userId=${user.id}`);
-              }}
-            >
-              Botを作成する
-            </button>
-          </div>
-          <div className={`h-full lg:w-1/4`}>
-            <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
-          </div>
-        </div>
-      </Layout>
-    );
   }
 
   return (
@@ -145,11 +93,8 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
                   className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`p-2 rounded-lg max-w-xs ${
-                      msg.sender === 'user'
-                        ? 'bg-[rgb(0,109,113)] text-white'
-                        : 'bg-white text-[rgb(0,109,113)]'
-                    }`}
+                    className={`p-2 rounded-lg max-w-xs ${msg.sender === 'user' ? 'bg-[rgb(0,109,113)] text-white' : 'bg-white text-[rgb(0,109,113)]'
+                      }`}
                   >
                     {msg.text}
                   </div>
@@ -157,7 +102,6 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
               ))}
             </div>
           </div>
-
           <div className='basis-1/12 flex items-center mb-2 mx-4' style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <input
               className='px-4 flex-1 h-full placeholder-gray-700 outline-none'
@@ -176,9 +120,20 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
             </div>
           </div>
         </div>
-        <div className={`h-full lg:w-1/4`}>
+        <div
+          className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+            } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
+        >
           <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
         </div>
+
+
+        <button
+          className='fixed top-4 right-4 z-10 lg:hidden bg-blue-500 text-white p-2 rounded-md'
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <FiMenu size={24} />
+        </button>
       </div>
     </Layout>
   );
@@ -189,43 +144,16 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const { groupId } = ctx.query;
 
   if (!session || !session.user) {
-    return {
-      props: {
-        user: null,
-        bot: null,
-        currentGroup: null,
-        groups: [],
-      },
-    };
+    return { props: { user: null, bot: null, currentGroup: null, groups: [] } };
   }
 
-  // ユーザー情報の取得
-  const userData = await db.user.findUnique({
-    where: {
-      id: session.user.uid,
-    },
-  });
-
+  const userData = await db.user.findUnique({ where: { id: session.user.uid } });
   if (!userData) {
-    return {
-      props: {
-        user: null,
-        bot: null,
-        currentGroup: null,
-        groups: [],
-      },
-    };
+    return { props: { user: null, bot: null, currentGroup: null, groups: [] } };
   }
 
-  const groups = await db.group.findMany({
-    where: {
-      userId: session.user.uid,
-    },
-  });
-
-  // groupIdが指定されている場合、それに基づいてcurrentGroupを取得
+  const groups = await db.group.findMany({ where: { userId: session.user.uid } });
   const currentGroup = groupId ? await db.group.findUnique({ where: { id: groupId as string }, include: { logs: true } }) : null;
-
   const botData = currentGroup?.botId ? await db.bot.findUnique({ where: { id: currentGroup.botId } }) : null;
 
   return {
