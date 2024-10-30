@@ -4,8 +4,8 @@ import { db } from '@/lib/prisma';
 import Layout from '@/pages/layout';
 import {
   Bot,
-  Group as PrismaGroup,
   Log,
+  Group as PrismaGroup,
   User,
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
@@ -125,7 +125,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
               Botを作成する
             </button>
           </div>
-          <div className={`h-full lg:w-1/4`}>
+          <div className={`h-full lg:w-1/4 fixed right-0`}>
             <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
           </div>
         </div>
@@ -176,7 +176,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
             </div>
           </div>
         </div>
-        <div className={`h-full lg:w-1/4`}>
+        <div className={`h-full lg:w-1/4 fixed right-0`}>
           <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
         </div>
       </div>

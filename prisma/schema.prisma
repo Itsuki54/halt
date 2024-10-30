@@ -51,3 +51,12 @@ model Group {
   bot    Bot     @relation(fields: [botId], references: [id])
   logs   Log[]
 }
+
+model Contact{
+  id String @id @default(uuid())
+  name String
+  email String
+  category String
+  message String
+  createdAt DateTime @default(now())
+}
