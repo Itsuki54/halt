@@ -37,7 +37,6 @@ export default function Document() {
           }
           `}
         </script>
-        <title>Connect2u - 感情サポートと相談を行うAIサービス</title>
       </Head>
       <body className='antialiased'>
         <Main />

@@ -6,7 +6,7 @@ import {
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const {  message, response, groupId } = req.body;
+    const { message, response, groupId } = req.body;
 
     if (!message || !response) {
       return res

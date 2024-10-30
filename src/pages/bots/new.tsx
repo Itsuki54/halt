@@ -33,14 +33,15 @@ export default function NewBot() {
       const { groupId } = data; // groupIdを取得
       toast.success('AI friend created successfully');
       router.push(`/?groupId=${groupId}`); // groupIdをURLに含めて遷移
-    } else {
+    }
+    else {
       toast.error('Failed to create AI friend');
     }
   };
 
   return (
     <Layout>
-      <div className='flex justify-center items-center bg-gray-100'>
+      <div className='flex justify-center items-center'>
         <div className='bg-white shadow-lg rounded-lg p-8'>
           <h1 className='text-3xl font-semibold text-center text-gray-800 mb-6'>
             Create a New AI Friend

@@ -1,5 +1,8 @@
 import { db } from '@/lib/prisma';
-import { NextApiRequest, NextApiResponse } from 'next';
+import {
+  NextApiRequest,
+  NextApiResponse,
+} from 'next';
 
 export default async function post(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -12,8 +15,8 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
 
     const bot = await db.bot.create({
       data: {
-        type : type,
-        userId : userId,
+        type: type,
+        userId: userId,
         group: {
           create: {
             name: `${type} Group ${timestamp}`,
@@ -29,9 +32,10 @@ export default async function post(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({
       status: 'success',
       data: bot,
-      groupId: bot.group ? bot.group.id : null
+      groupId: bot.group ? bot.group.id : null,
     });
-  } catch (e) {
+  }
+  catch (e) {
     if (e instanceof Error) {
       console.log(e);
       return res.status(500).json({ status: 'error', error: e.message });
