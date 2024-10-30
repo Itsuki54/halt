@@ -81,6 +81,38 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
     return <LoginRequired />;
   }
 
+  if (!bot || !currentGroup) {
+    return (
+      <Layout>
+        <div className='chat flex w-full h-full relative'>
+          <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
+            <h1 className='h-full text-white'>Botを作成するには下のボタンをクリックしてください。</h1>
+            <button
+              className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
+              onClick={() => {
+                router.push(`/bots/new?userId=${user.id}`);
+              }}
+            >
+              Botを作成する
+            </button>
+          </div>
+          <div
+            className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
+              } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
+          >
+            <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
+          </div>
+        </div>
+        <button
+          className='fixed top-4 right-4 z-10 lg:hidden bg-blue-500 text-white p-2 rounded-md'
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <FiMenu size={24} />
+        </button>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <div className='chat flex w-full h-full relative'>
@@ -127,14 +159,13 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
         </div>
 
-
-        <button
-          className='fixed top-4 right-4 z-10 lg:hidden bg-blue-500 text-white p-2 rounded-md'
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          <FiMenu size={24} />
-        </button>
       </div>
+      <button
+        className='fixed top-4 right-4 z-10 lg:hidden bg-blue-500 text-white p-2 rounded-md'
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      >
+        <FiMenu size={24} />
+      </button>
     </Layout>
   );
 }
