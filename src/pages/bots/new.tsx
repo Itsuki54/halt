@@ -1,24 +1,25 @@
-import { promptList } from '@/data/prompt';
-import { db } from '@/lib/prisma';
-import Layout from '@/pages/layout';
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { authOptions } from '../api/auth/[...nextauth]';
+import { useRouter } from 'next/router';
+import { promptList } from '@/data/prompt';
+import Layout from '@/pages/layout';
 
 export default function NewBot() {
   const router = useRouter();
   const { userId } = router.query;
   const [type, setType] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // ボタンの状態管理
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (isSubmitting) return; // 連続クリックを防ぐ
+
+    setIsSubmitting(true); // ボタンを無効化
     const friend = promptList.find(f => f.name === type);
     if (!friend) {
       toast.error('Please select a friend');
+      setIsSubmitting(false); // エラー時は無効化を解除
       return;
     }
 
@@ -30,13 +31,14 @@ export default function NewBot() {
 
     const data = await response.json();
     if (data.status === 'success') {
-      const { groupId } = data; // groupIdを取得
+      const { groupId } = data;
       toast.success('AI friend created successfully');
-      router.push(`/?groupId=${groupId}`); // groupIdをURLに含めて遷移
-    }
-    else {
+      router.push(`/?groupId=${groupId}`);
+    } else {
       toast.error('Failed to create AI friend');
+      setIsSubmitting(false);
     }
+
   };
 
   return (
@@ -66,10 +68,14 @@ export default function NewBot() {
               </div>
             </div>
             <button
-              className='w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1'
+              className={`w-full py-3 font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform ${isSubmitting
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 hover:bg-blue-700 text-white hover:-translate-y-1'
+                }`}
               type='submit'
+              disabled={isSubmitting} // ボタン無効化
             >
-              Create
+              {isSubmitting ? 'Creating...' : 'Create'}
             </button>
           </form>
         </div>
@@ -77,53 +83,3 @@ export default function NewBot() {
     </Layout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ctx => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
-  if (!session || !session.user) {
-    return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
-      },
-    };
-  }
-
-  const userData = await db.user.findUnique({
-    where: {
-      id: session.user.uid,
-    },
-  });
-
-  if (!userData) {
-    return {
-      redirect: {
-        destination: '/signin',
-        permanent: false,
-      },
-    };
-  }
-  const user = JSON.parse(JSON.stringify(userData));
-
-  const botData = await db.bot.findFirst({
-    where: {
-      userId: session.user.uid,
-    },
-  });
-
-  const bot = JSON.parse(JSON.stringify(botData));
-  // if (bot) {
-  //   return {
-  //     redirect: {
-  //       destination: '/',
-  //       permanent: false,
-  //     },
-  //   };
-  // }
-
-  return {
-    props: {
-      user,
-    },
-  };
-};

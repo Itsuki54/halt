@@ -1,25 +1,9 @@
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { toast } from 'react-hot-toast';
 
 export default function LoginRequired() {
   const router = useRouter();
 
-  const handleGoogleSignIn = async () => {
-    try {
-      const response = await signIn('google', { redirect: false });
-      if (!response || response.error) {
-        toast.error('Googleログインに失敗しました');
-      }
-      else {
-        toast.success('Googleでログインしました！');
-        router.push('/');
-      }
-    }
-    catch {
-      toast.error('Googleログインに失敗しました');
-    }
-  };
   return (
     <div className='flex flex-col items-center justify-center h-screen bg-gray-100 p-6'>
       <div className='text-center max-w-md'>
@@ -29,9 +13,9 @@ export default function LoginRequired() {
         </p>
         <button
           className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-          onClick={handleGoogleSignIn}
+          onClick={() => {router.push('/terms')}}
         >
-          ログイン
+          開始する
         </button>
       </div>
     </div>

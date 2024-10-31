@@ -14,6 +14,8 @@ import { useRouter } from 'next/router';
 import { SetStateAction, useEffect, useState } from 'react';
 import { FiSend, FiMenu } from 'react-icons/fi';
 import { authOptions } from './api/auth/[...nextauth]';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 interface Group extends PrismaGroup {
   logs: Log[];
@@ -30,10 +32,13 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
   const [input, setInput] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false); // メッセージ送信中かどうか
+  const [isCreatingBot, setIsCreatingBot] = useState(false); // Bot作成中の状態管理
   const router = useRouter();
 
   const onClickedNewBot = () => {
     if (user) {
+      setIsCreatingBot(true);
       router.push(`/bots/new?userId=${user.id}`);
     }
   };
@@ -52,7 +57,10 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
   }, [currentGroup]);
 
   const handleSendMessage = async () => {
-    if (!currentGroup || !bot) return;
+    if (!currentGroup || !bot || isSending) return;
+
+    setIsSending(true); // 送信開始
+    toast.success('メッセージが送信されました！'); // 成功のトーストを表示
     try {
       const response = await fetch('/api/chatgpt', {
         method: 'POST',
@@ -77,7 +85,10 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
 
       setInput('');
     } catch (error) {
+      toast.error('メッセージの送信に失敗しました'); // エラーのトーストを表示
       console.error('Error sending message:', error);
+    } finally {
+      setIsSending(false); // 送信終了
     }
   };
 
@@ -93,10 +104,10 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
             <h1 className='h-full text-white'>Botを作成するには下のボタンをクリックしてください。</h1>
             <button
-              className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-              onClick={() => {
-                router.push(`/bots/new?userId=${user.id}`);
-              }}
+              className={`py-2 px-4 rounded-lg transition duration-150 ${isCreatingBot ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              onClick={!isCreatingBot ? onClickedNewBot : undefined} // 無効化時はクリックできないように設定
+              disabled={isCreatingBot} // disabled属性を設定
             >
               Botを作成する
             </button>
@@ -121,6 +132,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
 
   return (
     <Layout>
+      <Toaster position="top-right" /> {/* トースト表示用コンポーネント */}
       <div className='chat flex w-full h-full relative'>
         <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
           <div className='basis-11/12 overflow-y-auto p-4'>
@@ -142,19 +154,21 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           </div>
           <div className='basis-1/12 flex items-center mb-2 mx-4' style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <input
-              className='px-4 flex-1 h-full placeholder-gray-700 outline-none'
+              className='px-4 flex-1 h-full placeholder-gray-700 outline-none basis-10/12 sm:basis-11/12'
               onChange={e => setInput(e.target.value)}
               placeholder='何か悩んでる？相談に乗るよ！'
               style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
               type='text'
               value={input}
+              disabled={isSending} // メッセージ送信中は入力を無効化
             />
             <div
-              className='flex items-center justify-center p-2 m-4'
-              onClick={handleSendMessage}
-              style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
+              className={`flex items-center justify-center p-2 m-4 basis-2/12 sm:basis-1/12 ${isSending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[rgb(0,195,202)]'
+                }`} // isSending の状態に応じて色とカーソルを切り替え
+              onClick={!isSending ? handleSendMessage : undefined} // 送信中はクリックを無効化
+              style={{ width: '100%' }}
             >
-              <FiSend size={30} className='w-full' color='white' />
+              <FiSend size={30} className='h-full' color='white' />
             </div>
           </div>
         </div>
