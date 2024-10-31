@@ -7,7 +7,7 @@ interface Props {
 
 const Layout = ({ children }: Props) => (
   <div className='h-screen w-screen bg-cover bg-center' style={{ backgroundImage: 'url(\'/inside.webp\')' }}>
-    <div className='flex h-screen px-8 py-4'>
+    <div className='flex h-full px-8 py-4'>
       <div className='basis-2/12 mr-20 hidden 2xl:block'>
         <Sidebar />
       </div>
