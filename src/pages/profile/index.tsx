@@ -11,6 +11,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 
 import { db } from '@/lib/prisma';
+import { occupations } from '@/data/occupations'; // 職種リストをインポート
 
 type FormInputs = {
     name: string;
@@ -34,7 +35,6 @@ function UserInfoPage({ user }: Props) {
     if (!user) {
         return <LoginRequired />;
     }
-
 
     const onSubmit: SubmitHandler<FormInputs> = async (data) => {
         try {
@@ -63,9 +63,6 @@ function UserInfoPage({ user }: Props) {
                 <div className="flex flex-col w-full lg:w-2/3 bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-6">
                     <Typography variant="h4" className="text-center font-bold" gutterBottom>
                         ユーザー情報入力
-                    </Typography>
-                    <Typography variant="body1" className="text-center text-gray-700" paragraph>
-                        以下のフォームに必要事項をご入力ください。
                     </Typography>
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4">
                         <TextField
@@ -120,11 +117,11 @@ function UserInfoPage({ user }: Props) {
                                 {...register('occupation', { required: '職種を選択してください' })}
                                 defaultValue=""
                             >
-                                <MenuItem value="student">学生</MenuItem>
-                                <MenuItem value="engineer">エンジニア</MenuItem>
-                                <MenuItem value="teacher">教師</MenuItem>
-                                <MenuItem value="healthcare">医療従事者</MenuItem>
-                                <MenuItem value="other">その他</MenuItem>
+                                {occupations.map((occupation) => (
+                                    <MenuItem key={occupation.value} value={occupation.value}>
+                                        {occupation.label}
+                                    </MenuItem>
+                                ))}
                             </Select>
                             {errors.occupation && <Typography color="error">{errors.occupation.message}</Typography>}
                         </FormControl>
