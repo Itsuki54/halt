@@ -1,9 +1,16 @@
+import { authOptions } from './api/auth/[...nextauth]';
+import { db } from '@/lib/prisma';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import {
   init,
   send,
 } from '@emailjs/browser';
+
+import Layout from '@/pages/layout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Container,
   Box,
   Button,
   CircularProgress,
@@ -86,64 +93,85 @@ const Contact = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', my: 4, p: 2 }}>
+    <Layout>
       <Toaster />
-      <Typography variant='h4' component='h1' gutterBottom>
-        お問い合わせ
-      </Typography>
-      <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-        <TextField
-          label='名前'
-          fullWidth
-          margin='normal'
-          {...form.register('name')}
-          error={!!form.formState.errors.name}
-          helperText={form.formState.errors.name?.message}
-          disabled={isSending}
-        />
-        <TextField
-          label='メールアドレス'
-          fullWidth
-          margin='normal'
-          {...form.register('email')}
-          error={!!form.formState.errors.email}
-          helperText={form.formState.errors.email?.message}
-          disabled={isSending}
-        />
-        <TextField
-          label='カテゴリ'
-          fullWidth
-          margin='normal'
-          {...form.register('category')}
-          error={!!form.formState.errors.category}
-          helperText={form.formState.errors.category?.message}
-          disabled={isSending}
-        />
-        <TextField
-          label='お問い合わせ内容'
-          fullWidth
-          margin='normal'
-          multiline
-          rows={4}
-          {...form.register('content')}
-          error={!!form.formState.errors.content}
-          helperText={form.formState.errors.content?.message}
-          disabled={isSending}
-        />
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <Button
-            type='submit'
-            variant='contained'
-            color='primary'
-            disabled={isSending}
-            startIcon={isSending && <CircularProgress size={20} />}
-          >
-            {isSending ? '送信中...' : '送信'}
-          </Button>
-        </Box>
-      </form>
-    </Box>
+      <Container className="flex justify-center items-center h-screen">
+        <div className="flex flex-col w-full lg:w-2/3 bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-6 justify-center items-center">
+          <Typography variant='h4' component='h1' gutterBottom>
+            お問い合わせ
+          </Typography>
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+            <TextField
+              label='名前'
+              fullWidth
+              margin='normal'
+              {...form.register('name')}
+              error={!!form.formState.errors.name}
+              helperText={form.formState.errors.name?.message}
+              disabled={isSending}
+            />
+            <TextField
+              label='メールアドレス'
+              fullWidth
+              margin='normal'
+              {...form.register('email')}
+              error={!!form.formState.errors.email}
+              helperText={form.formState.errors.email?.message}
+              disabled={isSending}
+            />
+            <TextField
+              label='カテゴリ'
+              fullWidth
+              margin='normal'
+              {...form.register('category')}
+              error={!!form.formState.errors.category}
+              helperText={form.formState.errors.category?.message}
+              disabled={isSending}
+            />
+            <TextField
+              label='お問い合わせ内容'
+              fullWidth
+              margin='normal'
+              multiline
+              rows={4}
+              {...form.register('content')}
+              error={!!form.formState.errors.content}
+              helperText={form.formState.errors.content?.message}
+              disabled={isSending}
+            />
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Button
+                type='submit'
+                variant='contained'
+                color='primary'
+                disabled={isSending}
+                startIcon={isSending && <CircularProgress size={20} />}
+              >
+                {isSending ? '送信中...' : '送信'}
+              </Button>
+            </Box>
+          </form>
+        </div>
+      </Container>
+    </Layout >
   );
 };
 
 export default Contact;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

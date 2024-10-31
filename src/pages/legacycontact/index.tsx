@@ -147,27 +147,15 @@ function ContactPage({ user, bot, currentGroup, groups }: Props) {
 
 export const getServerSideProps: GetServerSideProps = async ctx => {
     const session = await getServerSession(ctx.req, ctx.res, authOptions);
-    const { groupId } = ctx.query;
-
-    if (!session || !session.user) {
-        return { props: { user: null, bot: null, currentGroup: null, groups: [] } };
-    }
 
     const userData = await db.user.findUnique({ where: { id: session.user.uid } });
     if (!userData) {
         return { props: { user: null, bot: null, currentGroup: null, groups: [] } };
     }
 
-    const groups = await db.group.findMany({ where: { userId: session.user.uid } });
-    const currentGroup = groupId ? await db.group.findUnique({ where: { id: groupId as string }, include: { logs: true } }) : null;
-    const botData = currentGroup?.botId ? await db.bot.findUnique({ where: { id: currentGroup.botId } }) : null;
-
     return {
         props: {
             user: JSON.parse(JSON.stringify(userData)),
-            bot: botData ? JSON.parse(JSON.stringify(botData)) : null,
-            currentGroup: currentGroup ? JSON.parse(JSON.stringify(currentGroup)) : null,
-            groups: JSON.parse(JSON.stringify(groups)),
         },
     };
 };
