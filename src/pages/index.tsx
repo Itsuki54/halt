@@ -33,10 +33,12 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
   const [input, setInput] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSending, setIsSending] = useState(false); // メッセージ送信中かどうか
+  const [isCreatingBot, setIsCreatingBot] = useState(false); // Bot作成中の状態管理
   const router = useRouter();
 
   const onClickedNewBot = () => {
     if (user) {
+      setIsCreatingBot(true);
       router.push(`/bots/new?userId=${user.id}`);
     }
   };
@@ -102,10 +104,10 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
             <h1 className='h-full text-white'>Botを作成するには下のボタンをクリックしてください。</h1>
             <button
-              className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-              onClick={() => {
-                router.push(`/bots/new?userId=${user.id}`);
-              }}
+              className={`py-2 px-4 rounded-lg transition duration-150 ${isCreatingBot ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              onClick={!isCreatingBot ? onClickedNewBot : undefined} // 無効化時はクリックできないように設定
+              disabled={isCreatingBot} // disabled属性を設定
             >
               Botを作成する
             </button>
