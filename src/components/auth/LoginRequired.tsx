@@ -13,7 +13,9 @@ export default function LoginRequired() {
         </p>
         <button
           className='bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-150'
-          onClick={() => {router.push('/terms')}}
+          onClick={() => {
+            router.push('/terms');
+          }}
         >
           開始する
         </button>

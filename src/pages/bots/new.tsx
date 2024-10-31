@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
 import { promptList } from '@/data/prompt';
 import Layout from '@/pages/layout';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function NewBot() {
   const router = useRouter();
@@ -34,11 +34,11 @@ export default function NewBot() {
       const { groupId } = data;
       toast.success('AI friend created successfully');
       router.push(`/?groupId=${groupId}`);
-    } else {
+    }
+    else {
       toast.error('Failed to create AI friend');
       setIsSubmitting(false);
     }
-
   };
 
   return (
@@ -68,10 +68,11 @@ export default function NewBot() {
               </div>
             </div>
             <button
-              className={`w-full py-3 font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform ${isSubmitting
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white hover:-translate-y-1'
-                }`}
+              className={`w-full py-3 font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform ${
+                isSubmitting
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white hover:-translate-y-1'
+              }`}
               type='submit'
               disabled={isSubmitting} // ボタン無効化
             >

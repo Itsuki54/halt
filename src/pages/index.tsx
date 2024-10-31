@@ -4,18 +4,24 @@ import { db } from '@/lib/prisma';
 import Layout from '@/pages/layout';
 import {
   Bot,
-  Log,
   Group as PrismaGroup,
+  Log,
   User,
 } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
-import { SetStateAction, useEffect, useState } from 'react';
-import { FiSend, FiMenu } from 'react-icons/fi';
-import { authOptions } from './api/auth/[...nextauth]';
+import {
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-
+import {
+  FiMenu,
+  FiSend,
+} from 'react-icons/fi';
+import { authOptions } from './api/auth/[...nextauth]';
 
 interface Group extends PrismaGroup {
   logs: Log[];
@@ -29,7 +35,7 @@ interface Props {
 }
 
 export default function Home({ user, bot, currentGroup, groups }: Props) {
-  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([]);
+  const [messages, setMessages] = useState<{ sender: string; text: string; }[]>([]);
   const [input, setInput] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSending, setIsSending] = useState(false); // メッセージ送信中かどうか
@@ -45,7 +51,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
 
   useEffect(() => {
     if (currentGroup) {
-      const formattedMessages: SetStateAction<{ sender: string; text: string }[]> = [];
+      const formattedMessages: SetStateAction<{ sender: string; text: string; }[]> = [];
       currentGroup.logs.forEach(log => {
         formattedMessages.push({ sender: 'user', text: log.message });
         if (log.response) {
@@ -84,10 +90,12 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
       });
 
       setInput('');
-    } catch (error) {
+    }
+    catch (error) {
       toast.error('メッセージの送信に失敗しました'); // エラーのトーストを表示
       console.error('Error sending message:', error);
-    } finally {
+    }
+    finally {
       setIsSending(false); // 送信終了
     }
   };
@@ -104,8 +112,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
             <h1 className='h-full text-white'>Botを作成するには下のボタンをクリックしてください。</h1>
             <button
-              className={`py-2 px-4 rounded-lg transition duration-150 ${isCreatingBot ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
+              className={`py-2 px-4 rounded-lg transition duration-150 ${isCreatingBot ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
               onClick={!isCreatingBot ? onClickedNewBot : undefined} // 無効化時はクリックできないように設定
               disabled={isCreatingBot} // disabled属性を設定
             >
@@ -113,10 +120,8 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
             </button>
           </div>
           <div
-            className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
-              } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
+            className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
           >
-
             <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
           </div>
         </div>
@@ -132,7 +137,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
 
   return (
     <Layout>
-      <Toaster position="top-right" /> {/* トースト表示用コンポーネント */}
+      <Toaster position='top-right' /> {/* トースト表示用コンポーネント */}
       <div className='chat flex w-full h-full relative'>
         <div className='flex flex-col h-full w-full lg:w-3/4' style={{ backgroundColor: 'rgba(0, 195, 202, 0.3)' }}>
           <div className='basis-11/12 overflow-y-auto p-4'>
@@ -143,8 +148,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
                   className={`flex items-center ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`p-2 rounded-lg max-w-xs ${msg.sender === 'user' ? 'bg-[rgb(0,109,113)] text-white' : 'bg-white text-[rgb(0,109,113)]'
-                      }`}
+                    className={`p-2 rounded-lg max-w-xs ${msg.sender === 'user' ? 'bg-[rgb(0,109,113)] text-white' : 'bg-white text-[rgb(0,109,113)]'}`}
                   >
                     {msg.text}
                   </div>
@@ -163,8 +167,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
               disabled={isSending} // メッセージ送信中は入力を無効化
             />
             <div
-              className={`flex items-center justify-center p-2 m-4 basis-2/12 sm:basis-1/12 ${isSending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[rgb(0,195,202)]'
-                }`} // isSending の状態に応じて色とカーソルを切り替え
+              className={`flex items-center justify-center p-2 m-4 basis-2/12 sm:basis-1/12 ${isSending ? 'bg-gray-400 cursor-not-allowed' : 'bg-[rgb(0,195,202)]'}`} // isSending の状態に応じて色とカーソルを切り替え
               onClick={!isSending ? handleSendMessage : undefined} // 送信中はクリックを無効化
               style={{ width: '100%' }}
             >
@@ -173,13 +176,10 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           </div>
         </div>
         <div
-          className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
-            } transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
+          className={`fixed top-0 right-0 h-full w-1/2 bg-blue-300 lg:bg-transparent p-4 shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:w-1/4`}
         >
-
           <ChatHistoryBar groups={groups} onClickedNewBot={onClickedNewBot} />
         </div>
-
       </div>
       <button
         className='fixed top-4 right-4 z-10 lg:hidden bg-blue-500 text-white p-2 rounded-md'

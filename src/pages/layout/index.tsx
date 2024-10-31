@@ -1,5 +1,5 @@
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Sidebar } from '@/layouts/Sidebar';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 interface Props {
   children: React.ReactNode;
