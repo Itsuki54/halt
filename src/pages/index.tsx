@@ -142,7 +142,7 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
           </div>
           <div className='basis-1/12 flex items-center mb-2 mx-4' style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}>
             <input
-              className='px-4 flex-1 h-full placeholder-gray-700 outline-none'
+              className='px-4 flex-1 h-full placeholder-gray-700 outline-none basis-10/12 sm:basis-11/12'
               onChange={e => setInput(e.target.value)}
               placeholder='何か悩んでる？相談に乗るよ！'
               style={{ backgroundColor: 'rgba(255, 255, 255, 0)' }}
@@ -150,11 +150,11 @@ export default function Home({ user, bot, currentGroup, groups }: Props) {
               value={input}
             />
             <div
-              className='flex items-center justify-center p-2 m-4'
+              className='flex items-center justify-center p-2 m-4 basis-2/12 sm:basis-1/12'
               onClick={handleSendMessage}
-              style={{ width: '5%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
+              style={{ width: '100%', backgroundColor: 'rgba(0, 195, 202, 1)' }}
             >
-              <FiSend size={30} className='w-full' color='white' />
+              <FiSend size={30} className='h-full' color='white' />
             </div>
           </div>
         </div>
