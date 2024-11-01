@@ -5,7 +5,7 @@ import {
   Typography,
 } from '@mui/material';
 
-export function AdminLayout({ children }: { children: React.ReactNode; }) {
+export default function AdminLayout({ children }: { children: React.ReactNode; }) {
   return (
     <div>
       <AppBar position='static'>
