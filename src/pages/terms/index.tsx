@@ -1,14 +1,15 @@
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import {
   Button,
-  Container,
   Link,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import { toast } from 'react-hot-toast';
-
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import React from 'react';
+import { toast } from 'react-hot-toast';
 
 const TermsPage: React.FC = () => {
   const router = useRouter();
@@ -54,7 +55,6 @@ const TermsPage: React.FC = () => {
         <Link href='https://openai.com/ja-JP/policies/terms-of-use/' target='_blank' rel='noopener noreferrer'>
           ChatGPT 利用規約
         </Link>
-
         <div className='mt-4 flex space-x-4'>
           <Button variant='contained' color='primary' onClick={handleGoogleSignIn}>
             同意する
@@ -69,3 +69,20 @@ const TermsPage: React.FC = () => {
 };
 
 export default TermsPage;
+
+export const getServerSideProps: GetServerSideProps = async ctx => {
+  const session = await getServerSession(ctx.req, ctx.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};

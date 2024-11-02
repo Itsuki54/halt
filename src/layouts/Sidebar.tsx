@@ -1,19 +1,17 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FiMessageSquare, FiSettings, FiMail } from 'react-icons/fi';
+import {
+  FiMail,
+  FiMessageSquare,
+  FiSettings,
+} from 'react-icons/fi';
 
-export function Sidebar({ logo_visible }: { logo_visible: boolean }) {
+export function Sidebar({ logo_visible }: { logo_visible: boolean; }) {
   const router = useRouter();
   return (
     <div className='h-full w-full text-white flex flex-col gap-4'>
-
       {/* Logo */}
-      {logo_visible ? (
-        <Image alt='logo' height={100} src='/C2U_logo.png' width={100} />
-      ) : (
-        <div style={{marginTop: '50px' }}></div>
-
-      )}
+      {logo_visible ? <Image alt='logo' height={100} src='/C2U_logo.png' width={100} /> : <div style={{ marginTop: '50px' }}></div>}
 
       {/* Text Chat */}
       <div className='flex flex-col' style={{ gap: '20px' }}>

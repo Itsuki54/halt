@@ -1,19 +1,19 @@
-import { authOptions } from './api/auth/[...nextauth]';
 import { db } from '@/lib/prisma';
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
 import {
   init,
   send,
 } from '@emailjs/browser';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 import Layout from '@/pages/layout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Container,
   Box,
   Button,
   CircularProgress,
+  Container,
   TextField,
   Typography,
 } from '@mui/material';
@@ -95,8 +95,8 @@ const Contact = () => {
   return (
     <Layout>
       <Toaster />
-      <Container className="flex justify-center items-center h-screen">
-        <div className="flex flex-col w-full lg:w-2/3 bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-6 justify-center items-center">
+      <Container className='flex justify-center items-center h-screen'>
+        <div className='flex flex-col w-full lg:w-2/3 bg-white rounded-lg shadow-lg p-8 md:p-12 space-y-6 justify-center items-center'>
           <Typography variant='h4' component='h1' gutterBottom>
             お問い合わせ
           </Typography>
@@ -153,13 +153,13 @@ const Contact = () => {
           </form>
         </div>
       </Container>
-    </Layout >
+    </Layout>
   );
 };
 
 export default Contact;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async ctx => {
   const session = await getServerSession(ctx.req, ctx.res, authOptions);
 
   if (!session) {

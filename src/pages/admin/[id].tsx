@@ -1,5 +1,5 @@
 import { db } from '@/lib/prisma';
-import  AdminLayout  from '@/pages/layout/admin-layout';
+import AdminLayout from '@/pages/layout/admin-layout';
 import {
   Table,
   TableBody,
