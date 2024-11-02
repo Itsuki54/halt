@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://halt.otomos.jp
+
+# Sitemaps
+Sitemap: https://halt.otomos.jp/sitemap.xml

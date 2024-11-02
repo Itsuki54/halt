@@ -1,4 +1,4 @@
 export default {
-  siteUrl: 'https://prototype-connect2u.vercel.app',
+  siteUrl: 'https://halt.otomos.jp',
   generateRobotsTxt: true,
 };
