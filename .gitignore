@@ -42,4 +42,10 @@ next-env.d.ts
 # prisma
 prisma/migrations
 prisma/migrations.lock
+<<<<<<< HEAD
 prisma/dev.db
+=======
+
+prisma/dev.db
+prisma/dev.db.*
+>>>>>>> 3a45c97f41ec6a1ef3d58e431ab75fa193739c6e
