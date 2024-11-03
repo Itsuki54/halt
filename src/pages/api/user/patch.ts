@@ -6,7 +6,7 @@ import {
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id: uid, googleId } = req.body;
+    const { id: uid, googleId,gender,age,job} = req.body;
     if (!uid) {
       return res
         .status(400)
@@ -18,6 +18,9 @@ export default async function patch(req: NextApiRequest, res: NextApiResponse) {
       },
       data: {
         googleId,
+        gender,
+        job,
+        age
       },
     });
     return res.status(200).json({ status: 'success', data: user });

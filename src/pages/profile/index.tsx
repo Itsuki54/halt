@@ -14,7 +14,6 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
 import {
   SubmitHandler,
   useForm,
@@ -24,6 +23,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 
 import { occupations } from '@/data/occupations'; // 職種リストをインポート
 import { db } from '@/lib/prisma';
+import { User } from '@prisma/client';
 
 type FormInputs = {
   name: string;
@@ -33,9 +33,7 @@ type FormInputs = {
 };
 
 interface Props {
-  user: {
-    name: string;
-  } | null;
+  user: User;
 }
 
 function UserInfoPage({ user }: Props) {
@@ -50,10 +48,16 @@ function UserInfoPage({ user }: Props) {
 
   const onSubmit: SubmitHandler<FormInputs> = async data => {
     try {
-      const response = await fetch('/api/user-info', {
-        method: 'POST',
+      const response = await fetch('/api/user', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          uid: user.id,
+          googleId: user.googleId,
+          gender:data.gender,
+          age: data.ageGroup,
+          job:data.occupation,
+        }),
       });
 
       if (response.ok) {

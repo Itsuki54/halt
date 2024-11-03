@@ -208,9 +208,20 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   const currentGroup = groupId ? await db.group.findUnique({ where: { id: groupId as string }, include: { logs: true } }) : null;
   const botData = currentGroup?.botId ? await db.bot.findUnique({ where: { id: currentGroup.botId } }) : null;
 
+  const user = JSON.parse(JSON.stringify(userData));
+
+  if (user.job === null) {
+    return {
+      redirect: {
+        destination: '/profile',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
-      user: JSON.parse(JSON.stringify(userData)),
+      user: user,
       bot: botData ? JSON.parse(JSON.stringify(botData)) : null,
       currentGroup: currentGroup ? JSON.parse(JSON.stringify(currentGroup)) : null,
       groups: JSON.parse(JSON.stringify(groups)),

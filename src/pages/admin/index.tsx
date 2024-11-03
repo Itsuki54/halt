@@ -1,12 +1,20 @@
 import { db } from '@/lib/prisma';
 import AdminLayout from '@/pages/layout/admin-layout';
 import {
+  Female,
+  Male,
+  Work,
+} from '@mui/icons-material';
+import {
+  Avatar,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Chip,
+  Grid,
+  Paper,
   Typography,
 } from '@mui/material';
 import { User } from '@prisma/client';
@@ -15,40 +23,56 @@ import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
 
-export default function Users({ users }: { users: User[]; }) {
+export default function UserList({ users }: { users: User[]; }) {
   return (
     <AdminLayout>
       <Typography variant='h4' component='h1' gutterBottom>
-        Users
+        ユーザーリスト
       </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Google ID</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Role</TableCell>
-            <TableCell>Details</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map(user => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.googleId}</TableCell>
-              <TableCell>{user.gender || 'N/A'}</TableCell>
-              <TableCell>{user.role || 'N/A'}</TableCell>
-              <TableCell>
-                <Link href={`/admin/${user.id}`} passHref>
-                  <Button variant='contained' color='primary'>
-                    View Details
-                  </Button>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Grid container spacing={4}>
+        {users.map(user => (
+          <Grid item xs={12} sm={6} md={4} key={user.id}>
+            <Paper elevation={3} style={{ padding: '16px', borderRadius: '8px' }}>
+              <Card>
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: user.gender === 'male' ? 'blue' : 'pink' }}>
+                      {user.gender === 'male' ? <Male /> : <Female />}
+                    </Avatar>
+                  }
+                  title={user.googleId}
+                  subheader={`役割: ${user.role || 'N/A'}`}
+                  action={
+                    <Chip
+                      label={user.role}
+                      color={user.role === 'admin' ? 'secondary' : 'default'}
+                      icon={<Work />}
+                    />
+                  }
+                />
+                <CardContent>
+                  <Typography variant='body1'>
+                    <strong>性別:</strong> {user.gender || 'N/A'}
+                  </Typography>
+                  <Typography variant='body1'>
+                    <strong>年齢:</strong> {user.age || 'N/A'}
+                  </Typography>
+                  <Typography variant='body1'>
+                    <strong>職業:</strong> {user.job || 'N/A'}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Link href={`/admin/${user.id}`} passHref>
+                    <Button variant='contained' color='primary'>
+                      詳細を見る
+                    </Button>
+                  </Link>
+                </CardActions>
+              </Card>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
     </AdminLayout>
   );
 }
@@ -64,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
   if (!session || !session.user || user.role !== 'admin') {
     return {
       redirect: {
-        destination: '/ ',
+        destination: '/',
         permanent: false,
       },
     };
