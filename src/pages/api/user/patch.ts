@@ -6,7 +6,7 @@ import {
 
 export default async function patch(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id: uid, googleId,gender,age,job} = req.body;
+    const { uid, googleId,gender,age,job} = req.body;
     if (!uid) {
       return res
         .status(400)
