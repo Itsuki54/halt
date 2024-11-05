@@ -41,6 +41,7 @@ function UserInfoPage({ user }: Props) {
   const router = useRouter();
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<FormInputs>();
 
+
   // ユーザーがログインしていない場合、LoginRequired を表示
   if (!user) {
     return <LoginRequired />;
@@ -48,16 +49,18 @@ function UserInfoPage({ user }: Props) {
 
   const onSubmit: SubmitHandler<FormInputs> = async data => {
     try {
-      const response = await fetch('/api/user', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const body = 
+        JSON.stringify({
           uid: user.id,
           googleId: user.googleId,
           gender:data.gender,
           age: data.ageGroup,
           job:data.occupation,
-        }),
+        })
+      const response = await fetch('/api/user', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: body,
       });
 
       if (response.ok) {
@@ -83,15 +86,6 @@ function UserInfoPage({ user }: Props) {
             ユーザー情報入力
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col space-y-4'>
-            <TextField
-              label='お名前'
-              variant='outlined'
-              fullWidth
-              {...register('name', { required: 'お名前を入力してください' })}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
-
             {/* 性別選択 */}
             <FormControl fullWidth variant='outlined' error={!!errors.gender}>
               <InputLabel id='gender-label'>性別</InputLabel>
